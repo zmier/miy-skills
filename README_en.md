@@ -4,8 +4,8 @@
 
 **A curated skill collection for academic writing and research**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Skills](https://img.shields.io/badge/Skills-3-blue.svg)](./skills)
+[![[99 Assets/Images/0d356e72fcfaae41be0d7adf6fad1c69_MD5.svg]]](https://opensource.org/licenses/MIT)
+[![[99 Assets/Images/b998ac00d5de9bdfa6f6e7a1d54ba46b_MD5.svg]]](./skills)
 
 </div>
 
