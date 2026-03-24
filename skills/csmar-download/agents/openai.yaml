@@ -1,0 +1,4 @@
+interface:
+  display_name: "CSMAR Download"
+  short_description: "通过 Playwright MCP 自动搜索并下载 CSMAR 数据表"
+  default_prompt: "使用 Playwright MCP 在 WebVPN iframe 中搜索目标表，配置参数并下载 CSMAR 数据。"
