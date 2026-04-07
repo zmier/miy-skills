@@ -7,3 +7,6 @@
 [submodule "skills/claude-scientific-skills"]
 	path = skills/claude-scientific-skills
 	url = https://github.com/K-Dense-AI/claude-scientific-skills.git
+[submodule "skills/ppt-master"]
+	path = skills/ppt-master
+	url = git@github.com:hugohe3/ppt-master.git
