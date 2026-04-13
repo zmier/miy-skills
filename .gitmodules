@@ -10,3 +10,6 @@
 [submodule "skills/ppt-master"]
 	path = skills/ppt-master
 	url = git@github.com:hugohe3/ppt-master.git
+[submodule "skills/MixtapeTools"]
+	path = skills/MixtapeTools
+	url = git@github.com:scunning1975/MixtapeTools.git
