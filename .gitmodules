@@ -19,3 +19,6 @@
 [submodule "skills/clo-author"]
 	path = skills/clo-author
 	url = git@github.com:zmier/clo-author.git
+[submodule "skills/Research-Paper-Writing-Skills"]
+	path = skills/Research-Paper-Writing-Skills
+	url = git@github.com:zmier/Research-Paper-Writing-Skills.git
