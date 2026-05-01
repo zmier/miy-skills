@@ -16,3 +16,6 @@
 [submodule "skills/econ-writing-skill"]
 	path = skills/econ-writing-skill
 	url = git@github.com:hanlulong/econ-writing-skill.git
+[submodule "clo-author"]
+	path = clo-author
+	url = git@github.com:zmier/clo-author.git
