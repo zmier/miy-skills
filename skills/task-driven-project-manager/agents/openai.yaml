@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task-Driven Project Manager"
+  short_description: "Scaffold reproducible task-based projects"
+  default_prompt: "Use $task-driven-project-manager to scaffold a task-driven research project with Notebook control, Makefile commands, and TDD tests."
