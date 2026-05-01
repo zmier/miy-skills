@@ -13,3 +13,6 @@
 [submodule "skills/MixtapeTools"]
 	path = skills/MixtapeTools
 	url = git@github.com:scunning1975/MixtapeTools.git
+[submodule "skills/econ-writing-skill"]
+	path = skills/econ-writing-skill
+	url = git@github.com:hanlulong/econ-writing-skill.git
