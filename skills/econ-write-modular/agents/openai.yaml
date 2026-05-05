@@ -1,4 +1,4 @@
 interface:
   display_name: "模块化经济学写作"
-  short_description: "按论文部分加载经济学写作指南并辅助修订审稿与精准改写"
-  default_prompt: "使用 $econ-write-modular 帮我检查或改写一段经济学论文。"
+  short_description: "按论文部分与写作状态文件辅助经济学论文写作、审读和大修"
+  default_prompt: "使用 $econ-write-modular 帮我为这篇经济学论文建立辅助线并检查正文主线。"
