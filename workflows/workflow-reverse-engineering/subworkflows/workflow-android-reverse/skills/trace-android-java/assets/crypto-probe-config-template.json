@@ -1,0 +1,13 @@
+{
+  "windowId": "manual-window-001",
+  "previewBytes": 32,
+  "raw": false,
+  "stack": false,
+  "modules": {
+    "messageDigest": true,
+    "mac": true,
+    "cipher": true,
+    "keyIv": true,
+    "base64": false
+  }
+}

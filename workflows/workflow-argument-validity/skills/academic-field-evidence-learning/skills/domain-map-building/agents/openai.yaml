@@ -1,0 +1,5 @@
+interface:
+  display_name: "Domain Map Building"
+  short_description: "Build field maps and review risk radars."
+  default_prompt: "Use $domain-map-building to turn search and reading results into domain-map.md and review-risk-radar.md."
+

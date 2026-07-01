@@ -164,6 +164,61 @@ human gate: 登录、TCC、验证码、Keychain、前台 UI 等人类确认点
 - 可迁移模板或 checklist；
 - 人机合作状态机、通知触发条件和 dashboard 摘要原则。
 
+## Project Reverse Knowledge Base
+
+长周期 Mac App 逆向项目不应只依赖 TASK log 和 raw outputs 回看。若分析会持续跨多个阶段，项目目录应建立 living knowledge base，例如：
+
+```text
+docs/reverse-knowledge/
+├── README.md
+├── 01-static-inventory.md
+├── 02-runtime-data-model.md
+├── 03-hook-points-and-decisions.md
+└── 04-open-questions.md
+```
+
+推荐承接内容：
+
+- class、selector、property、ivar、framework、字符串和资源候选；
+- Mach-O/ObjC/Swift 静态地址、IMP offset、IDA/Ghidra 观察摘要；
+- 运行态对象结构、model/view-model/view 分层、字段语义和数据路径；
+- hook 点、trace 点、已否定路线、UAT 必检项和恢复方式；
+- open questions、置信度、来源文件和下一步探针。
+
+边界要求：
+
+```text
+raw evidence -> TASK
+整理后的事实/候选/状态 -> docs/reverse-knowledge
+可迁移规则 -> workflow/reference/skill
+```
+
+知识库必须显式区分 `confirmed`、`static`、`runtime`、`candidate`、`open`、`deprecated`，避免把候选写成已确认事实。不要复制目标 app、反编译数据库、完整日志、账号态、真实 token、完整 HAR 或案例专用大样本。
+
+## GUI / Chart Rendering Pattern
+
+AppKit、CorePlot、SwiftUI、WKWebView canvas 或自研图表这类动态渲染目标，不要默认把 View 层坐标、cell index、visible index、draw index 当作业务身份。总编排时先要求静态和运行态共同回答：
+
+```text
+business identity: date/id/key/item
+model layer: 原始数据项或可变中间对象
+view-model/property layer: visible range、offset、length、axis、layout cache
+view/render layer: draw call、fill、color、cell reuse、layer reuse
+```
+
+若 View 层 index 会随滚动、缩放、懒加载、缓存刷新或数据补全变化，优先选择 model-marker 路线：
+
+```text
+静态确认 MVC/MVVM/渲染链路
+→ 动态只读观察 model item 与 visible range
+→ 在授权副本中给目标 model item 写临时 marker
+→ 渲染层按 marker + visible offset 计算 local index
+→ 控制样本持续验证 shouldPatch=false
+→ UAT 覆盖滚动、缩放、数据补全和回看
+```
+
+详细规则见 `references/mac-ui-rendering-model-patterns.md`。这条规则目前为 `structural-green`：已在一个授权 TASK 中达到最小 Green 和人工 UAT Green，但尚未跨第二个 Mac App forward-test。
+
 ## Shared Environment
 
 优先使用系统自带只读工具建立基线：

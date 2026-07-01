@@ -1,0 +1,7 @@
+interface:
+  display_name: "Android 业务网络通道识别"
+  short_description: "定位目标业务流量缺失时的真实网络通道"
+  default_prompt: "Use $identify-android-business-network-channel to identify why an Android target business request is missing from ordinary captures and choose the next evidence route."
+
+policy:
+  allow_implicit_invocation: true

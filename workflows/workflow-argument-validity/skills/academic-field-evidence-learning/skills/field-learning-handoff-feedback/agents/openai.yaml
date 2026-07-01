@@ -1,0 +1,5 @@
+interface:
+  display_name: "Field Learning Handoff Feedback"
+  short_description: "Handoff field learning outputs and feedback candidates."
+  default_prompt: "Use $field-learning-handoff-feedback to prepare audit handoff, repair handoff, QC, and feedback candidates from field learning outputs."
+

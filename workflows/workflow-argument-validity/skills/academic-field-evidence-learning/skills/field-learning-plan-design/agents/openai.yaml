@@ -1,0 +1,5 @@
+interface:
+  display_name: "Field Learning Plan Design"
+  short_description: "Choose learning depth for academic field evidence."
+  default_prompt: "Use $field-learning-plan-design to turn field-learning requests into a concrete reading and evidence learning plan."
+

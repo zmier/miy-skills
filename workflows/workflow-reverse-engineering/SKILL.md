@@ -79,6 +79,25 @@ historical-error != live-blocker
 
 案例证据留在项目 TASK；父 workflow 只吸收抽象规则、路线判定、模板和护栏。
 
+若项目会持续积累静态/动态知识，还应建立项目级 living knowledge base，而不是只靠 TASK log 回看。推荐结构按目标类型调整，但至少要承接：
+
+```text
+静态 inventory：类、函数、符号、字符串、资源、地址、依赖
+运行态 data model：对象结构、字段语义、输入输出、中间状态
+hook/trace decisions：入口、已否定路线、Green/UAT 边界
+open questions：候选、置信度、来源、下一步实验
+```
+
+边界：
+
+```text
+raw evidence 留在 TASK
+整理后的事实进入项目 knowledge base
+跨项目可迁移规则才进入 workflow / skill / reference
+```
+
+知识库条目应标注状态，例如 `confirmed/static/runtime/candidate/open/deprecated`。这能防止长项目后期反复重新分析，也能避免把一次 hook 观察误当成稳定事实。
+
 ## 平台层职责
 
 平台子 workflow 负责把上位流程落到具体生态：
@@ -88,3 +107,13 @@ historical-error != live-blocker
 - JS：浏览器 / Node / webpack / source map / AST / DevTools / WebCrypto / wasm。
 - Windows：PE / DLL / WinAPI / NTAPI / x64dbg / WinDbg。
 - Unity：Mono / IL2CPP / metadata / GameAssembly。
+
+## Shared Host Tooling
+
+父 workflow 提供跨平台共享主机工具环境，默认位于：
+
+```text
+workflow-reverse-engineering/.venv
+```
+
+当前共享 Frida CLI/Python、mitmproxy 等主机侧工具。Android 设备端 `frida-server`、ADB、Magisk、systemless CA 等仍归 Android 子 workflow 管理。工具边界见 `references/shared-host-tooling.md`。

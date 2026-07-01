@@ -1,0 +1,43 @@
+name: foreign-generic-manuscript
+locale: en
+target: generic foreign journal manuscript docx
+engine_preference: quarto-or-pandoc
+fonts:
+  latin: "Times New Roman"
+  east_asia: "SimSun"
+  other: "Times New Roman"
+paragraphs:
+  body:
+    font_size_pt: 12
+    line_spacing: 2.0
+    first_line_indent_chars: 0
+    alignment: left
+page:
+  margins: "1in"
+headings:
+  h1:
+    font_latin: "Times New Roman"
+    font_size_pt: 14
+    font_color: "000000"
+    bold: true
+    alignment: left
+  h2:
+    font_latin: "Times New Roman"
+    font_size_pt: 12
+    font_color: "000000"
+    bold: true
+    alignment: left
+  h3:
+    font_latin: "Times New Roman"
+    font_size_pt: 12
+    font_color: "000000"
+    bold: true
+    alignment: left
+references:
+  csl_required: optional
+qc:
+  required_checks:
+    - openable
+    - heading_styles
+    - citations_if_present
+    - bibliography_if_present

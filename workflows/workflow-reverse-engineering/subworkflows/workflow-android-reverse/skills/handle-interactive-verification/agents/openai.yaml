@@ -1,0 +1,4 @@
+interface:
+  display_name: "交互式验证关口处理"
+  short_description: "为图片验证码、短信码和人工确认设计低频可审计的人机协作"
+  default_prompt: "使用 $handle-interactive-verification 为授权测试中的验证码或短信码设计低频人机协作方案。"

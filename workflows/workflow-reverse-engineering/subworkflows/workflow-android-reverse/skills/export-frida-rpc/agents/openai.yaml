@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frida RPC 导出"
+  short_description: "把 App 内方法封装成可审计的 RPC 调用边界"
+  default_prompt: "使用 $export-frida-rpc 在授权目标进程中封装并验证最小 Frida RPC。"

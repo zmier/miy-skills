@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Argument Issue Selection"
+  short_description: "Select review issues after arrow audit."
+  default_prompt: "Use $academic-argument-issue-selection to select major concerns or revision actions from an academic arrow audit table."

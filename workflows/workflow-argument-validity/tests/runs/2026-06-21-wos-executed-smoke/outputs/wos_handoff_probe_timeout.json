@@ -1,0 +1,40 @@
+{
+  "provider": "wos",
+  "status": "browser_handoff_ready",
+  "query": {
+    "expression": "TS=(\"digital governance\")",
+    "limit": 50,
+    "page_size": 50,
+    "sort_by": "relevance",
+    "mode": "query_builder",
+    "venue_whitelist": "none",
+    "venue_files": [],
+    "enforce_venue_in_query": false,
+    "max_venues_per_query": 20,
+    "base_expression": "TS=(\"digital governance\")",
+    "compiled_expressions": [
+      "TS=(\"digital governance\")"
+    ],
+    "fallback_compiled_expressions": [],
+    "venue_mode": "none",
+    "venue_sources": [],
+    "venue_names": [],
+    "compile_strategy": "single_then_fallback_split"
+  },
+  "config": {
+    "mode": "browser",
+    "browser_stage": "handoff",
+    "output": "/Users/narra/Documents/alib/Writer/00 信息/miy-skills/workflows/workflow-argument-validity/tests/runs/2026-06-21-wos-executed-smoke/outputs/wos_handoff_probe_timeout.json",
+    "manual_mode": true,
+    "create_run_artifacts": true
+  },
+  "manual_checkpoint": {
+    "required": true,
+    "confirmed": false
+  },
+  "current_page": {
+    "url": "https://www.webofscience.com/wos/woscc/advanced-search",
+    "title": "Advanced search - Web of Science Core Collection"
+  },
+  "candidates": []
+}

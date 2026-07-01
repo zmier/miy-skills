@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 目标接口分析"
+  short_description: "从行为抓包窗口中漏斗筛选、对照验证并记录目标请求接口"
+  default_prompt: "使用 $analyze-android-traffic 从授权 Android 抓包窗口中筛选、验证并记录目标接口。"

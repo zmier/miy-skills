@@ -1,0 +1,45 @@
+schema_version: 1
+tools:
+  - capability: android_traffic_capture_query
+    candidates:
+      - ElonJask/reqable-mcp
+    selected: ElonJask/reqable-mcp@0.3.2
+    status: validated
+  - capability: android_device_control
+    candidates:
+      - CursorTouch/Android-MCP
+      - mobile-next/mobile-mcp
+      - JuanCF/scrcpy-mcp
+      - minhalvp/android-mcp-server
+    status: research
+  - capability: android_static_analysis
+    candidates:
+      - jadx-mcp
+    status: research
+  - capability: java_native_runtime_instrumentation
+    candidates:
+      - frida-mcp
+    selected: project-local-frida-cli@16.0.19
+    status: validated
+    notes: B站6.24.0为32位旧应用；17.12.0注入崩溃，16.7.19 Java Bridge失败，课堂fixture固定16.0.19。MCP仍作为后续可替换适配器研究。
+  - capability: native_static_analysis
+    candidates:
+      - ida-pro-mcp
+      - ghidra-mcp
+    status: research
+    notes: 课程包中的 macOS IDA 7.0 是旧版候选源；必须先验证许可证、Apple Silicon/Rosetta、当前 macOS、IDAPython 与 MCP API 兼容性。MCP 不作为 Day19 首次复现的前置条件。
+  - capability: apk_structure_analysis
+    candidates:
+      - apktool-mcp
+    status: research
+  - capability: native_emulation_debugging
+    candidates:
+      - unidbg-mcp-debugger
+    status: research
+
+status_values:
+  - research
+  - available
+  - validated
+  - unavailable
+  - rejected

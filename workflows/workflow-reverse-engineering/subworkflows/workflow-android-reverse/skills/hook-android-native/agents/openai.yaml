@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Native 运行时取证"
+  short_description: "基于模块偏移设计最小 Frida Native Hook"
+  default_prompt: "使用 $hook-android-native 对已映射的 Android Native 函数执行最小运行时取证并生成 fixture。"

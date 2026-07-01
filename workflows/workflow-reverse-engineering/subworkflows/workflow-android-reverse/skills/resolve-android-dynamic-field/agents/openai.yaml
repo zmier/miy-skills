@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 动态字段来源闭环"
+  short_description: "追踪请求动态字段的缓存、持久化、首次生成与验证链"
+  default_prompt: "使用 $resolve-android-dynamic-field 在授权 Android 任务中闭环动态字段的读取、持久化、生成、替代策略和验证证据。"

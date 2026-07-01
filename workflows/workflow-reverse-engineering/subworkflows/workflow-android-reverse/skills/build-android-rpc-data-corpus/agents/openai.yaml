@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android RPC 语料库构建"
+  short_description: "把已确认的 Android RPC 通道沉淀为业务接口地图、复合接口与可追溯数据语料库。"
+  default_prompt: "使用 build-android-rpc-data-corpus 为这个已确认 RPC 通道的 Android 任务设计接口地图、复合接口、语料库契约、批量护栏与覆盖率声明。"

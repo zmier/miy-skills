@@ -1,0 +1,4 @@
+interface:
+  display_name: "Argument Tree Extraction"
+  short_description: "Argument tree extraction router."
+  default_prompt: "Use $argument-tree-extraction to extract an argument tree, evidence ledger, Mermaid view, and links from this text."

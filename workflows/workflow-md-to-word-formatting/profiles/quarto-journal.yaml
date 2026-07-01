@@ -1,0 +1,15 @@
+name: quarto-journal
+locale: mixed
+target: journal-specific Quarto manuscript
+engine_preference: quarto
+requires:
+  - quarto_template_name
+  - qmd_input
+qc:
+  required_checks:
+    - openable
+    - quarto_render_log
+    - template_source
+    - citations_if_present
+    - bibliography_if_present
+

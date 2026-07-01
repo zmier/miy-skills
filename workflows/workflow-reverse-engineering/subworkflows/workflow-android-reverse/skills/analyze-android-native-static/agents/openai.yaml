@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Native 静态分析"
+  short_description: "在 objdump、IDA 与交叉验证路线间选择并恢复 Native 控制流"
+  default_prompt: "使用 $analyze-android-native-static 选择合适的 Native 静态分析路线并输出可交给运行时 Hook 的证据。"

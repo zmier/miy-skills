@@ -1,0 +1,23 @@
+{
+  "architecture": "armv7-thumb",
+  "ida_plugins": [
+    "hexarm",
+    "hexrays"
+  ],
+  "functions": [
+    {
+      "name": "jni_entry",
+      "address": "0x1000",
+      "window": 128,
+      "instruction_count": 40,
+      "expected_role": "JNI wrapper or implementation"
+    },
+    {
+      "name": "algorithm_candidate",
+      "address": "0x2000",
+      "window": 256,
+      "instruction_count": 100,
+      "expected_role": "algorithm or update function"
+    }
+  ]
+}

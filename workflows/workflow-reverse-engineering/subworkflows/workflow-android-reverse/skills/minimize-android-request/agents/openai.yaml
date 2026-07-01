@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 请求参数归约"
+  short_description: "通过单变量删减实验识别请求的必要头部、字段与动态值"
+  default_prompt: "使用 $minimize-android-request 对已确认的授权 Android 请求执行低频单变量参数归约，并记录必要参数证据。"

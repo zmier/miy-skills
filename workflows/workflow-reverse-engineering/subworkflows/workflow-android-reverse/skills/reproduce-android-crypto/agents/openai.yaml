@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 算法与正文复现"
+  short_description: "精确复现正文并验证真实值或替代输入"
+  default_prompt: "使用 $reproduce-android-crypto 复现授权 Android 请求的签名与正文，并区分替代值可用、真实规则可复现和交叉验证完成。"

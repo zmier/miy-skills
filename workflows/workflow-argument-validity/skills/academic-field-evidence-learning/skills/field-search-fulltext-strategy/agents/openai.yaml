@@ -1,0 +1,5 @@
+interface:
+  display_name: "Field Search Fulltext Strategy"
+  short_description: "Design literature search and lawful fulltext routes."
+  default_prompt: "Use $field-search-fulltext-strategy to design scholar-kit search routes and lawful fulltext acquisition plans for field evidence learning."
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Exam Arrow Audit"
+  short_description: "Select exam argument breaks."
+  default_prompt: "Use $exam-argument-arrow-audit to audit all key arrows and produce a full arrow audit table; do not choose final writable issues unless an issue-selection skill is invoked."

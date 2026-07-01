@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Native 库重载"
+  short_description: "在自建 Android 壳应用中加载并调用授权 so"
+  default_prompt: "使用 $host-android-native-library 评估并设计自建 Android App 重载目标 so 的最小方案。"

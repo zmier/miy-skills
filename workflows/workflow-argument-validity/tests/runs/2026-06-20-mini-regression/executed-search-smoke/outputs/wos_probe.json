@@ -1,0 +1,32 @@
+{
+  "status": "scaffold",
+  "provider": "wos",
+  "query": {
+    "expression": "TS=(\"digital governance\")",
+    "limit": 50,
+    "page_size": 50,
+    "sort_by": "relevance",
+    "mode": "query_builder",
+    "venue_whitelist": "none",
+    "venue_files": [],
+    "enforce_venue_in_query": false,
+    "max_venues_per_query": 20,
+    "base_expression": "TS=(\"digital governance\")",
+    "compiled_expressions": [
+      "TS=(\"digital governance\")"
+    ],
+    "fallback_compiled_expressions": [],
+    "venue_mode": "none",
+    "venue_sources": [],
+    "venue_names": [],
+    "compile_strategy": "single_then_fallback_split"
+  },
+  "config": {
+    "mode": "scaffold",
+    "browser_stage": "handoff",
+    "output": "/Users/narra/Documents/alib/Writer/00 信息/miy-skills/workflows/workflow-argument-validity/tests/runs/2026-06-20-mini-regression/executed-search-smoke/outputs/wos_probe.json",
+    "manual_mode": true,
+    "create_run_artifacts": true
+  },
+  "candidates": []
+}

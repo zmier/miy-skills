@@ -1,0 +1,5 @@
+interface:
+  display_name: "Repair Knowledge Synthesis"
+  short_description: "Synthesize repair knowledge from field evidence."
+  default_prompt: "Use $repair-knowledge-synthesis to build case-repair-menu.md and handoff-to-repair-mapping.md from field evidence."
+

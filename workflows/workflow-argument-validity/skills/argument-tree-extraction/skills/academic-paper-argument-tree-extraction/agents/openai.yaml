@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Paper Argument Tree"
+  short_description: "Extract paper argument trees."
+  default_prompt: "Use $academic-paper-argument-tree-extraction to extract a paper argument tree, evidence ledger, evidence-expanded Mermaid view, and Obsidian links from this manuscript."

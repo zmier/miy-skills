@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 流量脚本处理"
+  short_description: "用 mitmproxy 脚本观察、保存和受控修改流量"
+  default_prompt: "使用 $process-android-traffic 为授权 Android 流量设计最小 mitmproxy 处理脚本。"

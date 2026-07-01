@@ -1,0 +1,5 @@
+interface:
+  display_name: "Repair Fulltext Pattern Extraction"
+  short_description: "Extract repair evidence packages from full texts, figures, and supplements."
+  default_prompt: "Use $repair-fulltext-pattern-extraction to read full texts and extract evidence packages for repairing target academic arrows."
+

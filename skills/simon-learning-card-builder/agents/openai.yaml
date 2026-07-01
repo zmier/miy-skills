@@ -1,0 +1,4 @@
+interface:
+  display_name: "Simon Learning Card Builder"
+  short_description: "将课程、书章与论文材料转化为可学习的 Obsidian 卡片系统"
+  default_prompt: "Use $simon-learning-card-builder to turn these learning materials into guided study units, knowledge maps, and Obsidian-linked permanent cards."

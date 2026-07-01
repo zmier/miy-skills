@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 混淆分析"
+  short_description: "区分 JADX 阅读别名与运行时真实符号，并恢复短名代码职责"
+  default_prompt: "使用 $analyze-android-obfuscation 在授权 APK 中建立混淆符号映射并选择可 Hook 的真实符号。"

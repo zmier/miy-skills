@@ -1,0 +1,4 @@
+interface:
+  display_name: "Exam Argument Issue Selection"
+  short_description: "Choose exam argument issues."
+  default_prompt: "Use $exam-argument-issue-selection to select 3-4 writable issues from an exam arrow audit table."

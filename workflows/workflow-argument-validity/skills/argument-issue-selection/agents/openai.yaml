@@ -1,0 +1,4 @@
+interface:
+  display_name: "Argument Issue Selection"
+  short_description: "Select issues after arrow audit."
+  default_prompt: "Use $argument-issue-selection to choose the most important issues from an arrow audit table before writing."

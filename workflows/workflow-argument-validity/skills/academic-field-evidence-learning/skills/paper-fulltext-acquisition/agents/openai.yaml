@@ -1,0 +1,5 @@
+interface:
+  display_name: "Paper Fulltext Acquisition"
+  short_description: "Acquire legal academic fulltexts for deep reading."
+  default_prompt: "Use $paper-fulltext-acquisition to obtain legal OA PDFs, HTML pages, or supplements and prepare handoff-to-fulltext-restoration.md."
+

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Repair Abstract Scan"
+  short_description: "Scan abstracts to find candidate repair routes for academic arrows."
+  default_prompt: "Use $repair-abstract-scan to screen abstracts according to repair-search-strategy.md and produce abstract-scan-ledger.md plus a deep-read shortlist."
+

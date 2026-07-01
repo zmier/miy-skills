@@ -1,0 +1,5 @@
+interface:
+  display_name: "Repair Case Menu Synthesis"
+  short_description: "Synthesize case-specific repair menus from learned evidence packages."
+  default_prompt: "Use $repair-case-menu-synthesis to turn abstract and fulltext repair patterns into a case-repair-menu.md for academic-arrow-repair-mapping."
+

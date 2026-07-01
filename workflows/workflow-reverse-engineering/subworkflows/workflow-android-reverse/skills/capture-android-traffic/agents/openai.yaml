@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 流量抓取"
+  short_description: "按目标设计人机抓包实验并建立 Reqable 与 MCP 证据链"
+  default_prompt: "使用 $capture-android-traffic 根据授权 Android 分析目标生成操作手册，并协作完成可验证的抓包窗口。"

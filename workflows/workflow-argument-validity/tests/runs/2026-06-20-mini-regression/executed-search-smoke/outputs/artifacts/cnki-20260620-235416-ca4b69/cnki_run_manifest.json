@@ -1,0 +1,23 @@
+{
+  "run_id": "cnki-20260620-235416-ca4b69",
+  "status": "completed",
+  "status_message": "CNKI 采集完成",
+  "query_expression": "TI='数字治理'",
+  "limit": 3,
+  "whitelist_enabled": false,
+  "encountered_verification": false,
+  "verification_count": 0,
+  "zero_result_confirmed": false,
+  "detail_enrichment_requested": true,
+  "candidate_count": 3,
+  "output_path": "/Users/narra/Documents/alib/Writer/00 信息/miy-skills/workflows/workflow-argument-validity/tests/runs/2026-06-20-mini-regression/executed-search-smoke/outputs/cnki_probe.json",
+  "status_path": "/Users/narra/Documents/alib/Writer/00 信息/miy-skills/workflows/workflow-argument-validity/tests/runs/2026-06-20-mini-regression/executed-search-smoke/outputs/cnki_run_status.json",
+  "artifact_root": "/Users/narra/Documents/alib/Writer/00 信息/miy-skills/workflows/workflow-argument-validity/tests/runs/2026-06-20-mini-regression/executed-search-smoke/outputs/artifacts/cnki-20260620-235416-ca4b69",
+  "artifacts": {
+    "results_debug": "/Users/narra/Documents/alib/Writer/00 信息/miy-skills/workflows/workflow-argument-validity/tests/runs/2026-06-20-mini-regression/executed-search-smoke/outputs/artifacts/cnki-20260620-235416-ca4b69/cnki_results_debug.html"
+  },
+  "recovery_action": "no_action_completed",
+  "recovery_reason": "当前运行已完成，无需恢复。",
+  "started_at": "2026-06-20T23:54:16+08:00",
+  "updated_at": "2026-06-20T23:55:08+08:00"
+}

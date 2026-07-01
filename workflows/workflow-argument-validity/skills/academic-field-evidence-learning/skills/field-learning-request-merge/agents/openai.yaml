@@ -1,0 +1,5 @@
+interface:
+  display_name: "Field Learning Request Merge"
+  short_description: "Merge arrow evidence and repair learning requests."
+  default_prompt: "Use $field-learning-request-merge to merge external evidence and repair knowledge gaps into a field-learning-request-ledger.md."
+

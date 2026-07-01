@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 插桩故障诊断"
+  short_description: "诊断 Root、Frida 检测、ptrace 与模拟器红灯"
+  default_prompt: "使用 $diagnose-android-instrumentation 诊断授权 Android 任务中的插桩失败并设计最小恢复实验。"

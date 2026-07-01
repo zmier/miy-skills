@@ -1,0 +1,4 @@
+interface:
+  display_name: "Argument Arrow Audit"
+  short_description: "Audit whether A supports B."
+  default_prompt: "Use $argument-arrow-audit to check which arrows in this argument tree are strong, weak, broken, unclear, or need QC."

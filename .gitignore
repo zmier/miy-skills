@@ -1,25 +1,42 @@
-# Editor and IDE
+# OS and editor noise
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 *~
-.DS_Store
 PROJECT_SUMMARY.md
-# Logs
-*.log
-logs/
 
-# Temporary files
+# Local environment and secrets
+.env
+.env.local
+.env.*.local
+config.local.yaml
+.venv/
+venv/
+env/
+ENV/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node/build artifacts
+node_modules/
+dist/
+build/
+
+# Local runtime/tool caches
+downloads/
+logs/
 tmp/
 temp/
 *.tmp
-
-# OS files
-Thumbs.db
-.DS_Store
-
-# User-specific configuration
-.env
-.env.local
-config.local.yaml
+*.log

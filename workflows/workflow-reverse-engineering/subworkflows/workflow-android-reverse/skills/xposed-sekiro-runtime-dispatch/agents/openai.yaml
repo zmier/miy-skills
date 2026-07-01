@@ -1,0 +1,4 @@
+interface:
+  display_name: "Xposed Sekiro Runtime Dispatch"
+  short_description: "Xposed/Sekiro 长驻运行态代发工作流"
+  default_prompt: "Use $xposed-sekiro-runtime-dispatch to design a safe Xposed/Sekiro app-runtime dispatch workflow."

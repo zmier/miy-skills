@@ -1,0 +1,14 @@
+{
+  "name": "workflow-android-reverse-agents",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Frida Java Agent 构建依赖",
+  "scripts": {
+    "validate:mermaid": "node scripts/validate-mermaid.mjs"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "11.15.0",
+    "@types/frida-gum": "19.6.0",
+    "frida-compile": "19.0.5"
+  }
+}

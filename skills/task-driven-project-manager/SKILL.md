@@ -7,6 +7,21 @@ description: Scaffold and document reproducible task-driven research or data pro
 
 Use this skill to turn a medium-sized research, data, writing, or analysis task into a reproducible project workspace.
 
+## Relationship To Workflow
+
+This Skill is the scaffold and project-structure execution unit. For long exploratory projects that need nested TASKs, evidence ledgers, ReAct logs, phase reviews, Obsidian double-link maps, forward tests, or workflow/skill feedback, use the parent workflow:
+
+```text
+Writer/00 信息/miy-skills/workflows/workflow-task-driven-project/
+```
+
+Rule of thumb:
+
+```text
+Need folders, README, Makefile, tests -> this Skill.
+Need project evolution, evidence governance, phase review, skill feedback -> workflow-task-driven-project.
+```
+
 ## Core Pattern
 
 Prefer a **Task-driven architecture**:
@@ -18,6 +33,7 @@ Prefer a **Task-driven architecture**:
 - Put tests in `tests/unit`, `tests/e2e`, `tests/uat`, and `tests/fixtures`.
 - Put each stage in `tasks/TASKxx-name/`, with its own instructions, script, outputs, cache, and logs.
 - Put only final deliverables in `final_outputs/`.
+- For long exploratory projects, keep project-level phase reviews in `final_outputs/` and use Obsidian `[[...]]` links to connect them back to TASK evidence, logs, outputs, and reusable workflow/skill updates.
 
 Use type-based folders such as `scripts/`, `outputs/`, and `docs/` only for cross-cutting or legacy material. The main workflow should be visible from the `tasks/` tree.
 
@@ -34,10 +50,17 @@ Use type-based folders such as `scripts/`, `outputs/`, and `docs/` only for cros
    - TDD and test policy;
    - expected final outputs.
 4. Add a `Makefile` when the project needs repeatable commands.
-5. Add or recommend `common/requirements.txt` and a project-local `.venv`.
-6. Specify that Jupyter must use the project `.venv` kernel.
+5. Add or recommend `common/requirements.txt` and a project-local `.venv` by default.
+   - If the user or workspace specifies a shared environment, use that explicit environment instead of creating a project-local `.venv`.
+   - If new packages need to be installed, declare them in the current project's `pyproject.toml` before installation. Keep project-specific dependency intent in the project, even when using a shared workspace venv.
+6. Specify that Jupyter must use the selected environment's kernel, either the project `.venv` kernel or the user-specified shared venv kernel.
 7. Add `tests/` with unit/e2e/UAT layers and GIVEN-WHEN-THEN Chinese comment convention.
 8. If implementing the structure, create skeleton directories and lightweight `TASKxx-说明.md` files.
+9. For exploratory or long-running projects, add an evidence and review layer:
+   - each major TASK keeps `logs/log.md` or `logs/LOG.md` with ReAct-style decisions;
+   - important outputs get stable Markdown summaries, not only raw JSON/SQLite;
+   - project-level `final_outputs/*复盘.md` documents connect phases with Obsidian double links;
+   - reusable methods are explicitly listed as workflow/skill feedback candidates.
 
 ## Standard Structure
 
@@ -50,7 +73,8 @@ project-root/
 ├── TASK-总-*.md
 ├── PROJECT-*.md
 ├── 00_project_dashboard.ipynb
-├── .venv/
+├── .venv/                     # optional when using a project-local venv
+├── pyproject.toml             # required before adding/installing project-specific packages
 ├── common/
 │   ├── requirements.txt
 │   ├── README.md
@@ -77,6 +101,44 @@ project-root/
 
 Read `references/templates.md` when you need copyable README, Task, Makefile, or test templates.
 
+## Exploratory Project Evolution
+
+For projects where the next task is discovered through evidence, do not force all Tasks to be known upfront. Use a stable top-level task tree plus nested subtasks when a single large task naturally becomes a workstream.
+
+Recommended pattern:
+
+```text
+tasks/
+├── TASK01-problem-framing/
+├── TASK02-baseline/
+├── TASK03-first-green/
+├── TASKxx-major-workstream/
+│   ├── TASKxx-说明.md
+│   ├── logs/
+│   │   └── log.md
+│   ├── docs/
+│   ├── outputs/
+│   └── subtasks/
+│       ├── TASKxx-01-subproblem/
+│       ├── TASKxx-02-code-engineering/
+│       └── TASKxx-03-limit-or-risk-investigation/
+└── TASKyy-workflow-feedback/
+```
+
+Use subtasks when:
+
+- the work is part of the same business objective;
+- the parent task owns the state machine, database, queue, or main artifact;
+- splitting into a new top-level task would hide the main storyline.
+
+Create a new top-level task when:
+
+- the goal, artifact, or acceptance contract changes;
+- a new external system, data source, or workflow route becomes central;
+- the result should be understandable without the parent task context.
+
+For exploratory work, task IDs are not required to be perfectly sequential. Preserve historical IDs rather than renumbering. Add README/status tables so humans can navigate the history.
+
 ## Task Folder Rules
 
 Each `tasks/TASKxx-name/` folder should answer:
@@ -102,6 +164,45 @@ TASKxx-name/
 
 For pure manual review Tasks, replace `run.py` with `manual_review.md`.
 
+For research or reverse-engineering style Tasks, prefer:
+
+```text
+TASKxx-name/
+├── TASKxx-说明.md
+├── README.md                 # optional human entrypoint for large tasks
+├── acceptance-contract.md    # optional UAT / route boundary
+├── request-or-evidence-ledger.md
+├── docs/
+├── scripts/
+├── agent/
+├── inputs/
+├── outputs/
+├── cache/
+├── logs/
+│   └── log.md
+└── subtasks/
+```
+
+Each `logs/log.md` should use a lightweight ReAct rhythm:
+
+```markdown
+## YYYY-MM-DD HH:mm ReAct：标题
+
+### Thought
+当前判断、假设和为什么要做这一步。
+
+### Action
+实际命令、人工动作、脚本、参数、保存路径。
+
+### Observation
+结果、错误、证据文件、关键数字。
+
+### Reflection
+结论、边界、下一步、是否反哺 workflow/skill。
+```
+
+Do not rely only on terminal output. Important observations should be promoted into Markdown summaries under `outputs/` or `docs/` so they can be linked later.
+
 ## Notebook Dashboard
 
 The top-level `00_project_dashboard.ipynb` is a control plane, not the main implementation. It should:
@@ -115,7 +216,7 @@ The top-level `00_project_dashboard.ipynb` is a control plane, not the main impl
 - stop at human-review gates;
 - point to final outputs.
 
-Always require the Notebook to use the project `.venv` kernel. A typical kernel display name is project-specific, for example `Python (Project Name)`.
+Always require the Notebook to use the selected project environment kernel. By default this is the project `.venv`; when the user specifies a shared workspace venv, use that shared venv and document the absolute interpreter path. A typical kernel display name is project-specific, for example `Python (Project Name)`.
 
 ## Makefile
 
@@ -131,7 +232,7 @@ Add a Makefile for repeatable commands when the project has scripts, tests, or a
 - `make test-uat`
 - `make freeze`
 
-Use `common/requirements.txt` as the default dependency file and `.venv/` as the default environment folder.
+Use `common/requirements.txt` as the lightweight default dependency file and `.venv/` as the default environment folder. If project-specific packages will be installed, create or update `pyproject.toml` in the current project first, then install from that declared dependency set. If the user specifies a shared venv, point Makefile variables at that explicit venv instead of creating another one.
 
 ## TDD and Testing
 
@@ -165,6 +266,50 @@ def test_parse_standard_filename():
 ## Output Discipline
 
 Keep intermediate results inside each Task. Copy or export only reviewed final deliverables to `final_outputs/`.
+
+Use this distinction:
+
+- `tasks/TASKxx/outputs/`: evidence, raw/simplified outputs, batch summaries, reports for one task.
+- `tasks/TASKxx/docs/`: task-local explanation, runbooks, decision notes, manual protocols.
+- `docs/`: cross-cutting project references, Q&A, decision trees, conceptual explanations.
+- `final_outputs/`: reviewed deliverables, phase reviews, final reports, project-level maps.
+
+For Obsidian-friendly projects:
+
+- Use `[[relative/path/to/doc|label]]` links in review documents.
+- Link to specific evidence reports, not only to task folders.
+- Prefer one project-level map/review in `final_outputs/` after each major phase.
+- Keep raw sensitive data out of Markdown; link to sanitized summaries instead.
+
+## Project Reviews and Skill Feedback
+
+Long projects should produce review documents at phase boundaries:
+
+```text
+final_outputs/
+├── Phase-1-*.md
+├── Phase-2-*.md
+└── Project-完整历程复盘.md
+```
+
+A good project review should include:
+
+- the original question and how it changed;
+- a phase-by-phase timeline;
+- key Red -> Green transitions;
+- evidence links using Obsidian double links;
+- data and coverage boundaries;
+- engineering pitfalls and recovery patterns;
+- what should be generalized into a workflow, skill, template, or runbook.
+
+When a project teaches a reusable method, add a `workflow/skill feedback` section either in the review document or a dedicated TASK. The feedback should say:
+
+```text
+Where did this rule come from?
+What evidence supports it?
+Which workflow/skill should receive it?
+What should remain only in the TASK as case evidence?
+```
 
 When reporting to the user, mention:
 

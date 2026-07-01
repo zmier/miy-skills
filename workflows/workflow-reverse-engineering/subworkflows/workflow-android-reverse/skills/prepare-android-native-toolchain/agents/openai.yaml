@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 原生逆向环境准备"
+  short_description: "检查并准备 JNI、NDK、IDA 与 Native 分析工具链"
+  default_prompt: "使用 $prepare-android-native-toolchain 检查 JNI/Native 逆向环境并生成可审计的准备报告。"

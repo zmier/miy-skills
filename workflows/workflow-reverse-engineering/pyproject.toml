@@ -1,0 +1,22 @@
+[project]
+name = "workflow-reverse-engineering"
+version = "0.1.0"
+description = "Shared host-side tooling for cross-platform reverse-engineering workflows."
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "frida>=17,<18",
+  "frida-tools>=14,<15",
+  "mitmproxy>=11,<13",
+  "requests==2.32.4",
+]
+
+[dependency-groups]
+dev = [
+  "pytest==9.0.2",
+  "pyyaml>=6.0.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+

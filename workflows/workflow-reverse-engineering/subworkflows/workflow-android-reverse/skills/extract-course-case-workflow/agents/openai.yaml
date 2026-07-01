@@ -1,0 +1,3 @@
+interface:
+  display_name: "课程案例迁移评估"
+  short_description: "把老师脚本拆成可复用 workflow 能力"

@@ -1,0 +1,5 @@
+interface:
+  display_name: "External Evidence Synthesis"
+  short_description: "Synthesize external evidence for arrow audit."
+  default_prompt: "Use $external-evidence-synthesis to convert external sources into external-evidence-ledger.md and handoff-to-arrow-audit.md."
+

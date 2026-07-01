@@ -1,0 +1,5 @@
+interface:
+  display_name: "Repair Search Strategy Design"
+  short_description: "Design search routes for learning how to repair academic arrows."
+  default_prompt: "Use $repair-search-strategy-design to turn target broken academic arrows into a concrete repair-knowledge search strategy before abstract scanning."
+

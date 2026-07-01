@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Repair Knowledge Learning"
+  short_description: "Learn repair standards for academic arrows."
+  default_prompt: "Use $academic-repair-knowledge-learning to search and read literature, methods, or source materials to learn how a broken academic arrow should be repaired."

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Academic Field Evidence Learning"
+  short_description: "Build field maps and external evidence ledgers for academic argument review."
+  default_prompt: "Use $academic-field-evidence-learning to centralize literature search, field familiarization, external evidence, and repair knowledge learning between arrow audit and repair mapping."
+

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Arrow Repair Mapping"
+  short_description: "Map broken arrows to repairs or downgrades."
+  default_prompt: "Use $argument-arrow-repair-mapping to turn weak or broken arrows into repair, evidence, QC, or downgrade routes before issue selection."
+

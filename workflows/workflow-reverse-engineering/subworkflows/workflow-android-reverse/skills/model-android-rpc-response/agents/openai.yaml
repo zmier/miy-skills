@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android RPC 响应建模"
+  short_description: "将 Android RPC/bridge 响应整理成可交付的数据模型、脱敏策略和工具输出 schema。"
+  default_prompt: "对已确认的 Android RPC 或 bridge 响应做字段建模，输出主实体、分页字段、敏感字段和默认简化 JSON schema。"

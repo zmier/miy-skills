@@ -1,0 +1,5 @@
+interface:
+  display_name: "Academic Arrow Repair Mapping"
+  short_description: "Map academic paper arrow breaks to repairs."
+  default_prompt: "Use $academic-arrow-repair-mapping to map academic paper arrow breaks to literature, experiment, analysis, QC, or claim-downgrade routes."
+

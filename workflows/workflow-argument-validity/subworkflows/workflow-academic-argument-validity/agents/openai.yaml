@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Argument Validity"
+  short_description: "Academic paper argument workflow."
+  default_prompt: "Use $workflow-academic-argument-validity to audit an academic paper as an argument tree, from author claims to evidence, weak arrows, and review-ready issues."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Arrow Audit"
+  short_description: "Audit academic paper arrows."
+  default_prompt: "Use $academic-argument-arrow-audit to audit every key arrow in the academic paper argument tree and produce an arrow audit table."

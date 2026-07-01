@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 请求构造链定位"
+  short_description: "用 JADX 从接口路径追踪到 RequestBody 与字段编码构造位置"
+  default_prompt: "使用 $locate-android-request-builder 在授权 Android APK 中从目标接口路径定位请求声明、调用点和正文构造链。"

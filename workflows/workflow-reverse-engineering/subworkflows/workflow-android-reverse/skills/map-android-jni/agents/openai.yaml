@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android JNI 映射恢复"
+  short_description: "恢复 Java native 声明与 so 函数地址映射"
+  default_prompt: "使用 $map-android-jni 恢复目标 Android native 方法的注册方式、模块和函数偏移。"

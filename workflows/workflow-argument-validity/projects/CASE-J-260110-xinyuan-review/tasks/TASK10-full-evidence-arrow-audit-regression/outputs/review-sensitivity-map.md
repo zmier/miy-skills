@@ -1,0 +1,21 @@
+# Review Sensitivity Map
+
+This map only consumes TASK07 author-tree evidence. It does not add reviewer attack nodes.
+
+| sensitivity_id | type | evidence_ids | source links | why worth auditing | impact | target_arrow_ids |
+|---|---|---|---|---|---|---|
+| S01 | treatment-definition mismatch | E-XDEF-1; E-XDEF-2; E-XDEF-3 | manuscript 三-二-2; 表1 | "disclosed violation without related inquiry/penalty" may prove an operational rule, not true voluntary/proactive motivation. | X2/Y | A008; A016 |
+| S02 | timing mismatch | E-DID-POST-1; E-DID-POST-2; E-SAMPLE-2; E-ROB-ALT-2; E-ROB-ALT-3 | manuscript 三-一; 三-二-2; 四-四-6; 表9 | annual t to t+2 timing may mix disclosure date, information visibility, peer reaction, and outcome measurement. | X2 | A017; A011; A012; A035 |
+| S03 | baseline missing / sample-mechanism mismatch | E-SAMPLE-3; E-SAMPLE-4; E-SAMPLE-5 | manuscript 三-一 | excluding event firms and short-interval multi-event industries cleans the sample but may remove the baseline needed to interpret spillover and industry learning. | X2/Y | A018; A023; A011 |
+| S04 | construct-measure mismatch | E-YDEF-1; E-YDEF-2; E-DESC-1; E-ROB-ALT-1 | manuscript 三-二-1; 表1; 表2; 表9 | KV may be a market microstructure proxy for information asymmetry/volume-price relation; the arrow to broad disclosure quality needs method/citation support. | X2/Y | A010; A035 |
+| S05 | cluster-level / treatment-level fit | E-MODEL-1; E-MODEL-3; E-MODEL-4; E-MODEL-5 | manuscript 三-三; 表3; 表4 | treatment varies by industry-event timing, but standard errors are clustered at firm level in baseline models. | X2 | A025; A012; A028 |
+| S06 | pretrend sufficiency | E-PRETREND-1; E-PRETREND-2; E-PRETREND-3; E-PRETREND-4 | 表3 | two insignificant pre-period coefficients help, but do not alone establish DID identifying assumptions or rule out anticipation/differential shocks. | X2 | A026; A012 |
+| S07 | staggered DID threat fit | E-ROB-STACK-1; E-ROB-STACK-2; E-ROB-BACON-1 | 表5; 图1 | stacked DID and Bacon decomposition address some heterogeneous-treatment concerns, but figure QC and exact estimator assumptions need method verification. | X2 | A027 |
+| S08 | result-to-finding scale | E-MAIN-1; E-MAIN-2; E-MAIN-4; E-MAIN-5; E-DESC-1 | 表4; 表2; manuscript 四-三 | significant negative coefficients support KV decline; the jump to average disclosure-quality improvement and 9.58% interpretation needs scale/construct clarity. | X2/Y | A013; A028; A029 |
+| S09 | mechanism text-table conflict | E-MECH-CAR-1; E-MECH-CAR-2; E-MECH-CAR-3; E-MECH-REP-1; E-MECH-REP-2; E-MECH-REP-3 | 表10; 表11 | Table 11 column (3) appears to reverse the author prose pattern for PosCAR/NegCAR. | X2/Y | A014; A030; E021 |
+| S10 | market pressure proxy | E-MECH-PRESS-1; E-MECH-PRESS-2; E-MECH-PRESS-3; E-MECH-PRESS-4; E-MECH-PRESS-5 | 表12; manuscript 五-二 | attention proxies support heterogeneity, but may capture visibility/selection rather than pressure mechanism. | X2 | A031; A021 |
+| S11 | mechanism exclusion by null result | E-MECH-INFO-1; E-MECH-INFO-2; E-MECH-INFO-3; E-MECH-INFO-4 | 表13 | null/non-differential punishment results may mean no detected evidence, not that information transmission is not a main mechanism. | X2/Y | A032; A014 |
+| S12 | robustness-threat mismatch | E-ROB-MATCH-*; E-ROB-COMMON-*; E-ROB-OSTER-*; E-ROB-ALT-*; E-ROB-PLACEBO-* | 表6-9; 图2 | many robustness tests exist, but each must match a concrete threat; placebo figure has QC limits. | X2 | A033; A034; A035; A036; A015 |
+| S13 | heterogeneity construct-level fit | E-HET-LEADER-*; E-HET-OWN-*; E-HET-MON-*; E-HET-RELY-*; E-HET-COM-* | 表14-18 | event-firm status, self-involvement, financing dependence and competition are used as boundary/mechanism evidence; construct levels vary between event firm, peer firm and industry. | X2/Y | A037; A038; A039; A040; A015 |
+| S14 | literature gap and contribution verification | E-CIT-GAP-*; E-X1-CONTR-1; E-CIT-CONTR-*; E-CONTR-* | manuscript 一; citations | gap/contribution arrows require external literature and citation verification. | X1/Y | A006; A007; A041; A042; A003 |
+| S15 | policy implication fit | E-POLICY-1; E-POLICY-2; E-POLICY-3; E-X1-POL-1; E-X1-POL-2 | manuscript 一; 七 | policy suggestions about leniency/exemption and proactive disclosure need official-law/regulatory context; evidence may support narrower implications. | Y | A043; A003 |

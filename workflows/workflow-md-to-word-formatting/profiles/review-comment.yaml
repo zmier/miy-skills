@@ -1,0 +1,37 @@
+name: review-comment
+locale: mixed-cn-en
+target: editable reviewer comments / editor notes / response letters
+engine_preference: pandoc
+fonts:
+  east_asia: "宋体"
+  latin: "Times New Roman"
+  other: "Times New Roman"
+paragraphs:
+  body:
+    font_size_pt: 12
+    line_spacing: 1.15
+    first_line_indent_chars: 0
+    alignment: left
+headings:
+  h1:
+    font_east_asia: "黑体"
+    font_latin: "Times New Roman"
+    font_size_pt: 16
+    font_color: "000000"
+    bold: true
+    alignment: left
+    outline_level: 1
+  h2:
+    font_east_asia: "黑体"
+    font_latin: "Times New Roman"
+    font_size_pt: 14
+    font_color: "000000"
+    bold: true
+    alignment: left
+    outline_level: 2
+qc:
+  required_checks:
+    - openable
+    - paragraph_sample
+    - headings
+    - mixed_cn_en_font

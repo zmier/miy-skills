@@ -1,0 +1,4 @@
+interface:
+  display_name: "Exam Argument Tree Extraction"
+  short_description: "Extract exam argument trees."
+  default_prompt: "Use $exam-argument-tree-extraction to extract a compact exam argument tree and arrow audit from this argument prompt."

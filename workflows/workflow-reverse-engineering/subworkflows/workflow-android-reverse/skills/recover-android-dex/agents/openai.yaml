@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Dex 恢复"
+  short_description: "诊断加固壳并从运行时恢复可检索、可审计的业务 Dex"
+  default_prompt: "使用 $recover-android-dex 为授权加固 APK 设计运行时 Dex 恢复与质量筛选方案。"

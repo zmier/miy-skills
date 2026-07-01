@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android 实验设备准备"
+  short_description: "检查并准备 ADB、Root、Magisk 与动态分析前置环境"
+  default_prompt: "Use $prepare-android-device to inspect and prepare an authorized Android test device."

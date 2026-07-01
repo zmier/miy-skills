@@ -1,0 +1,4 @@
+interface:
+  display_name: "课程驱动的 Skill 工程"
+  short_description: "从课程、案例、项目反馈或对话洞见持续构建可迁移 Skills"
+  default_prompt: "使用 $course-driven-skill-engineering 将这门课程、案例、探索性项目或对话洞见转化为经过复现、反馈、回顾和迁移验证的 Skills 体系。"

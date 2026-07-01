@@ -26,6 +26,8 @@ Use these snippets when creating or updating a project. Adapt names and paths to
 ## 9. Run Order
 
 ## 10. Notes and Risks
+
+## 11. Phase Reviews and Evidence Maps
 ```
 
 ## TASKxx-说明.md Template
@@ -48,6 +50,103 @@ Use these snippets when creating or updating a project. Adapt names and paths to
 ## 7. 测试要求
 
 ## 8. 注意事项
+
+## 9. 证据与日志
+
+- ReAct 日志：
+- 关键 outputs：
+- 关键 docs：
+- 上游/下游双链：
+```
+
+## Large Exploratory TASK Template
+
+```markdown
+# TASKxx：大型探索任务
+
+## 背景
+
+## 目标
+
+## 当前判断
+
+## 子任务结构
+
+```text
+subtasks/
+├── TASKxx-01-...
+├── TASKxx-02-...
+└── TASKxx-03-...
+```
+
+## 状态表
+
+| 子任务 | 状态 | 证据 | 下一步 |
+|---|---|---|---|
+
+## 主证据链
+
+- [[outputs/evidence-report|证据报告]]
+- [[logs/log|ReAct 日志]]
+- [[docs/decision-note|决策说明]]
+
+## Done Criteria
+
+## 反哺候选
+
+| 经验 | 证据 | 目标 workflow/skill | 状态 |
+|---|---|---|---|
+```
+
+## ReAct log Template
+
+```markdown
+## YYYY-MM-DD HH:mm ReAct：标题
+
+### Thought
+
+### Action
+
+### Observation
+
+### Reflection
+```
+
+## Project Phase Review Template
+
+```markdown
+# 项目阶段复盘：标题
+
+## 定位
+
+## 一句话总览
+
+## 原始问题如何变化
+
+## 阶段时间线
+
+## 关键 Red -> Green
+
+| Red | Green | 证据 |
+|---|---|---|
+
+## 证据地图
+
+- [[tasks/TASK01-name/TASK01-说明|TASK01]]
+- [[tasks/TASK02-name/outputs/report|关键报告]]
+
+## 数据/覆盖率边界
+
+## 工程坑与恢复策略
+
+## 可迁移方法
+
+## Workflow / Skill 反哺
+
+| 经验 | 反哺位置 | 证据 |
+|---|---|---|
+
+## 下一步
 ```
 
 ## Makefile Template
