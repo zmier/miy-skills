@@ -22,3 +22,6 @@
 [submodule "skills/Research-Paper-Writing-Skills"]
 	path = skills/Research-Paper-Writing-Skills
 	url = git@github.com:zmier/Research-Paper-Writing-Skills.git
+[submodule "skills/sci-paper-plot-skill"]
+	path = skills/sci-paper-plot-skill
+	url = https://github.com/FFFxueGawaine/sci-paper-plot-skill.git
