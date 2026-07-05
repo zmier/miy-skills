@@ -28,13 +28,52 @@ Also check local command availability:
 ```bash
 command -v mcp-gitee
 go version
+npm view @gitee/mcp-gitee version bin repository --json
 ```
 
-At the time this Skill was created on this machine, `go` and `mcp-gitee` were not installed.
+On this machine, `mcp-gitee` was installed on 2026-07-05 through the official npm package:
+
+```bash
+npm install -g @gitee/mcp-gitee@latest
+command -v mcp-gitee
+mcp-gitee --version
+```
+
+Current verified path and version:
+
+```text
+/opt/homebrew/bin/mcp-gitee
+Version: 1.0.0
+```
+
+`go` was not installed at the time of setup, so the npm package is the preferred local route on this machine.
 
 ## Installation Options
 
-### Local stdio server
+### Local stdio server via npm
+
+The official npm package is `@gitee/mcp-gitee`; avoid the similarly named community package `mcp-gitee` unless there is a specific reason to use it.
+
+```bash
+npm install -g @gitee/mcp-gitee@latest
+mcp-gitee --version
+```
+
+For Codex, use TOML config like:
+
+```toml
+[mcp_servers.gitee]
+command = "/opt/homebrew/bin/mcp-gitee"
+args = ["-transport", "stdio"]
+startup_timeout_sec = 120
+
+[mcp_servers.gitee.env]
+GITEE_API_BASE = "https://gitee.com/api/v5"
+```
+
+Add `GITEE_ACCESS_TOKEN` through the user's approved secret route before performing private or write operations.
+
+### Local stdio server via Go
 
 Requires Go 1.23 or higher.
 
