@@ -34,9 +34,9 @@ dist/
 build/
 
 # Local runtime/tool caches
-downloads/
-logs/
-tmp/
-temp/
+/downloads/
+/logs/
+/tmp/
+/temp/
 *.tmp
 *.log
