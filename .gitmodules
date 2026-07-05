@@ -25,3 +25,9 @@
 [submodule "skills/sci-paper-plot-skill"]
 	path = skills/sci-paper-plot-skill
 	url = https://github.com/FFFxueGawaine/sci-paper-plot-skill.git
+[submodule "vendors/larksuite-cli"]
+	path = vendors/larksuite-cli
+	url = https://github.com/larksuite/cli.git
+[submodule "vendors/book-to-skill"]
+	path = vendors/book-to-skill
+	url = https://github.com/virgiliojr94/book-to-skill.git
