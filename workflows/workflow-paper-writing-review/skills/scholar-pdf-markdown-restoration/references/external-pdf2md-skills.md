@@ -96,7 +96,7 @@ Why not directly use:
 
 - It optimizes "load whole PDF into context", not faithful审稿底稿.
 - It does not solve paragraph anchors, formula restoration, or back-matter figure/table回填.
-- Docling is not currently installed in Writer `.venv`; adding it should be a deliberate optional experiment, not a default dependency.
+- Docling is currently installed in Writer `.venv` and has been used in a separate `book-to-skill` technical extraction experiment. It should still be treated as an optional technical/table-heavy extractor, not as the default dependency or final authority.
 
 Adopt into our Skill:
 
@@ -124,6 +124,7 @@ For this workflow, choose in this order:
 1. Project-local extraction script with existing Writer `.venv` dependencies.
 2. Manual/model restoration against PDF page images.
 3. Optional fast-mode alternative extraction with `pymupdf4llm` if it gives useful cross-check material.
-4. Optional heavy extractor experiment, such as Docling/Marker/MinerU, only when a TASK explicitly calls for it.
+4. Optional technical/table-heavy extraction with Docling when routing suggests it can improve table, caption, or layout candidates.
+5. Optional heavy extractor experiment, such as Marker/MinerU, only when a TASK explicitly calls for it.
 
 External Skills are references and optional tool sources. The authoritative workflow remains `scholar-pdf-markdown-restoration`.

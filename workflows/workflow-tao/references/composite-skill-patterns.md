@@ -19,6 +19,19 @@ academic-argument-arrow-audit：验箭头
 
 两者都是复合 Skill，但子 Skill 拆法不同。原因不是风格问题，而是复杂性来源不同。
 
+补充说明：本文件关注的是“复合 Skill / workflow 的子能力如何编排”。另有一个 draft reference 关注 workflow 的顶层拓扑形态：
+
+```text
+references/workflow-topologies.md
+```
+
+两者关系：
+
+```text
+composite pattern = 工序型、诊断路由型、混合型；
+workflow topology = tree-like、graph-like、hybrid graph-of-trees。
+```
+
 ## 类型一：工序型复合 Skill
 
 工序型复合 Skill 的复杂性来自一串稳定工作步骤。每一步都有相对独立的输入、输出、完成标准和 QC。

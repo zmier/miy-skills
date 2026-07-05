@@ -13,6 +13,16 @@ description: 将学术 PDF 抽取、分章节还原为 Markdown，并使用模�
 
 不追求复刻 PDF 的视觉排版；追求可读、可核、可重跑、可定位。
 
+本 Skill 是一个复合型 Skill：
+
+```text
+诊断路由型前置抽取层
++ 工序型学术 PDF 原文还原层
++ 强制视觉 QC / provenance 层
+```
+
+前置抽取层负责判断 PDF 类型、任务深度、可用工具和 fallback 路线；中后段 restoration / QC 主轴保持不变。粗抽取器只产生候选材料，不产生最终可信度。
+
 ## 触发条件
 
 当用户提到以下任务时使用：
@@ -47,11 +57,16 @@ description: 将学术 PDF 抽取、分章节还原为 Markdown，并使用模�
 
 当需要用模型视觉能力逐页/逐章修复粗抽取稿时，读取 [vision-restoration-rules.md](references/vision-restoration-rules.md)。
 
+当需要选择抽取器、判断是否使用 Docling technical extraction、记录 extraction metadata 或设计 fallback 时，读取 [extraction-routing.md](references/extraction-routing.md)。
+
 ## 核心原则
 
 - `[para N]` 对应 PDF 中一个自然段；标题不占用段落编号。
 - Markdown 必须尽量忠实于 PDF 原文；不能为了分段整洁而改写作者措辞。
 - 抽取产物应按章节组织；单文件总稿可作为主底稿，必要时同时输出逐章节 Markdown。
+- 抽取前应先判断 PDF 类型和任务深度；text-heavy、table-heavy、formula-heavy、scanned、back-matter-heavy PDF 可以走不同粗抽取路线。
+- Docling / PyMuPDF / `pymupdf4llm` / `pdftotext` / `pypdf` 等工具只能作为候选抽取器或 second opinion，不能替代视觉复核和 restored Markdown 的完成标准。
+- 对 table-heavy / formula-heavy / technical born-digital PDF，可用 Docling technical extraction 生成结构化候选；但 `extraction_method = docling` 不等于 `visual checked` 或 `cell-level audited`。
 - 原文顺序优先于 Markdown 美观；任何重排、合并或省略都要能从 PDF 结构中解释。
 - 脚本只是粗抽取工具；逐章还原时应主动使用模型的语言、数学、视觉和版面理解能力修复 Markdown。
 - 对复杂或高风险页面，优先对照渲染后的 PDF 页面图进行 vision-first 还原；不要把机器抽取结果当作权威原文。
@@ -108,6 +123,7 @@ description: 将学术 PDF 抽取、分章节还原为 Markdown，并使用模�
 
 - `pdf` / `pdf:pdf`：提供 PDF 渲染、页面检查、文本抽取和低层工具建议；可作为本 Skill 的工具层，但不负责 restored Markdown 的逐章还原。
 - `markitdown`：可作为粗抽取候选，用于快速得到 LLM-friendly Markdown；不保证公式、表格、Figure 裁剪、段落编号和 Obsidian 嵌入满足审读底稿标准。
+- `book-to-skill`：可借鉴 technical / text routing、Docling extraction、preflight、metadata、fallback 和大文档按需读取；不迁移其“书转 Skill / 框架提炼”目标。
 - `split-pdf`：适合把论文拆分后深读并产出结构化阅读笔记；不负责把原文还原成可引用的 restored Markdown。
 - `manuscript-quick-reconstruction`：应在可靠 restored Markdown 之后使用，用于贡献链快速还原；如果 Markdown 底稿不可靠，先回到本 Skill。
 
@@ -195,22 +211,25 @@ pix.save("outputs/figures-restored/figure-01.png")
 ## 工作流
 
 1. 定位文件：读取 PDF、抽取产物、抽取日志、脚本和 TASK 说明。
-2. 如无抽取产物，创建或复用项目内脚本，生成分章节 Markdown、back matter/raw 输出、图像/图表素材和 extraction log。
-3. 建立可人工修订的还原稿目录，例如 `outputs/sections-restored/` 和 `outputs/manuscript_restored.md`。
-4. 建立或更新 `logs/restoration-qc.md`；如果项目已有命名约定，也可使用 `logs/segmentation-qc.md`。
-5. 做全局结构检查：
+2. 做 PDF 类型与任务深度诊断；如需选择抽取器或 fallback，读取 [extraction-routing.md](references/extraction-routing.md)。
+3. 做 preflight：确认粗抽取器、页面渲染工具和 page image 路径可用，并记录到 extraction / restoration QC。
+4. 如无抽取产物，创建或复用项目内脚本，生成分章节 Markdown、back matter/raw 输出、图像/图表素材、metadata 和 extraction log。
+5. 对复杂图表或公式 PDF，可生成多抽取器候选，例如 Docling technical output 与 PyMuPDF / `pymupdf4llm` baseline，并标记来源。
+6. 建立可人工修订的还原稿目录，例如 `outputs/sections-restored/` 和 `outputs/manuscript_restored.md`。
+7. 建立或更新 `logs/restoration-qc.md`；如果项目已有命名约定，也可使用 `logs/segmentation-qc.md`。
+8. 做全局结构检查：
    - 标题顺序是否完整；
    - 段落编号是否连续；
    - 正文与 back matter 是否分离；
    - 正文顺序是否与 PDF 一致；
    - 是否存在明显重复、缺失、半句开头、错序、乱码或公式碎片。
-6. 建立视觉复核素材：
+9. 建立视觉复核素材：
    - 渲染所有表格页、图像页、公式高风险页和跨页边界页；
    - 将页面图保存到 `outputs/page-images/`；
    - 对表格密集论文生成 contact sheet；
    - 若本轮有表格或图像，必须在继续前确认 page image 可打开。
-7. 对需要视觉核验的章节，读取 [vision-restoration-rules.md](references/vision-restoration-rules.md)，按 rendered PDF page image 做 vision-first 还原；表格、图像和跨页对象不得跳过视觉复核。
-8. 逐章进行模型还原修订：
+10. 对需要视觉核验的章节，读取 [vision-restoration-rules.md](references/vision-restoration-rules.md)，按 rendered PDF page image 做 vision-first 还原；表格、图像和跨页对象不得跳过视觉复核。
+11. 逐章进行模型还原修订：
    - 对照 PDF 页面修复正文错字、漏句、错序、断段和误标题；
    - 按全文语义结构修正标题层级，不按字体大小机械判断；
    - 对每个跨页边界检查自然段是否断裂、重复或漏句；
@@ -221,13 +240,18 @@ pix.save("outputs/figures-restored/figure-01.png")
    - 将表格转为 Markdown table 文件，同时保留表题、注释、显著性说明和 PDF 页码；
    - 正文插表位置应嵌入 Markdown table 文件，而不是优先嵌入截图；
    - 保留 `[para N]`，但不让公式、图片或表格占用正文段落编号。
-9. 还原 back matter：
+12. 对图表执行多源处理：
+   - 使用 Docling / PyMuPDF / `pymupdf4llm` 输出作为对象发现和结构化候选；
+   - 以 PDF page image / crop image 作为最终视觉权威；
+   - 在 QC 中记录 `docling candidate`、`pymupdf candidate`、`page-level visual checked`、`cell-level audited` 等状态；
+   - 不得用抽取器输出替代视觉复核状态。
+13. 还原 back matter：
    - 对照 PDF 检查 Conclusion 之后是否有 Conflict of Interest Statement、References、Data Availability、Funding、Acknowledgments、Appendix 等；
    - 将这些内容加入主 restored manuscript 的末尾；
    - 如存在逐章节输出，则创建独立 back matter section 文件，例如 `sections-restored/26-references.md`；
    - 不给 back matter 条目分配 `[para N]`；
    - 若参考文献只存在于 raw back matter 而未并入 restored manuscript，视为未完成。
-10. 做高风险区域核查：
+14. 做高风险区域核查：
    - Abstract；
    - Introduction 首尾；
    - 理论假设；
@@ -238,13 +262,13 @@ pix.save("outputs/figures-restored/figure-01.png")
    - Conclusion；
    - References / back matter 起止页；
    - 跨页段落。
-11. 做图表视觉复核并写入日志：
+15. 做图表视觉复核并写入日志：
    - 表格至少生成或更新 `logs/table-visual-qc.md`；
    - 图像至少生成或更新 `logs/figure-visual-qc.md`；
    - 每张表/图必须有对象编号、PDF 页码、page image 路径、复核状态和剩余风险；
    - 若只完成页面级复核，写 `page-level visual checked`，不要写成 `cell-level audited`；
    - 若发现作者正文叙述与 PDF 表格不一致，必须在 QC 中单列为 `author-prose-conflict` 或同类标签。
-12. 给每个错误打标签：
+16. 给每个错误打标签：
    - `text-error`：文字识别错误、乱码、特殊字符错误或词语被错误改写；
    - `order`：文本顺序与 PDF 不一致；
    - `split`：一个自然段被拆成多个 `[para]`；
@@ -258,9 +282,9 @@ pix.save("outputs/figures-restored/figure-01.png")
    - `footnote`：脚注、尾注或声明位置错误；
    - `backmatter`：参考文献、附录或声明缺失、只留 raw 未并入 restored、或混入正文编号；
    - `noise`：页眉页脚、页码、行号或系统水印混入正文。
-13. 对系统性错误修复规则或脚本，必要时重跑抽取命令；不要用重跑替代逐章还原。
-14. 复查受影响区域，并确认没有引入新的错段或错序。
-15. 汇总 QC 状态，说明是否可进入审稿阅读或写作分析阶段；如果视觉复核仍未完成，只能说明“可作为粗底稿”，不能说明“完整还原完成”。
+17. 对系统性错误修复规则或脚本，必要时重跑抽取命令；不要用重跑替代逐章还原。
+18. 复查受影响区域，并确认没有引入新的错段或错序。
+19. 汇总 QC 状态，说明是否可进入审稿阅读或写作分析阶段；如果视觉复核仍未完成，只能说明“可作为粗底稿”，不能说明“完整还原完成”。
 
 ## 推荐输出
 
@@ -287,7 +311,8 @@ QC 记录至少包含：
 
 - source PDF 和抽取产物路径；
 - 本轮核查日期；
-- 抽取工具、脚本和命令；
+- PDF 类型、任务深度、抽取工具、脚本和命令；
+- extraction method / extraction mode / fallback events / tool versions；
 - 抽查范围和全检范围；
 - 错误清单；
 - 修复动作；
