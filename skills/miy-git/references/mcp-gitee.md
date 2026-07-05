@@ -171,18 +171,21 @@ When splitting a submodule or creating a new remote:
    - organization;
    - enterprise.
 2. Confirm repository name, visibility, license, default branch, and whether to initialize with README.
-3. Prefer `create_repo` via MCP if available.
-4. If MCP is unavailable, use one of:
+3. For child repositories and submodule splits, prefer a private Gitee repository by default.
+4. Prefer `create_repo` via MCP if available and authenticated.
+5. Use public visibility only when the user explicitly asks for publication or the repository is already governed as public/open-source.
+6. Do not create a GitHub repository for a child/submodule split unless the user asks for GitHub or the existing project governance requires GitHub.
+7. If MCP is unavailable, use one of:
    - Gitee web UI;
    - Gitee OpenAPI with a token;
    - existing CLI/script already configured by the user.
-5. After creation, verify remote:
+8. After creation, verify remote:
 
 ```bash
 git ls-remote <remote-url>
 ```
 
-6. Push the standalone repository before adding or updating the parent submodule gitlink.
+9. Push the standalone repository before adding or updating the parent submodule gitlink.
 
 ## Fallback Without MCP
 

@@ -58,13 +58,21 @@ If the task needs Gitee repository operations beyond normal `git push`, read [mc
 
 If `mcp-gitee` tools are not exposed in the current session, say so and use the fallback path in [mcp-gitee.md](references/mcp-gitee.md).
 
+Default repository creation policy:
+
+- When creating a child repository or splitting a directory into a submodule, prefer creating a private repository on Gitee first.
+- Use Gitee MCP `create_repo` when available and authenticated.
+- Default visibility is private unless the user explicitly asks for public/open-source publication.
+- Do not create a GitHub repository for a child/submodule split unless the user asks for GitHub or the existing project governance requires GitHub.
+- If namespace, repository name, or visibility cannot be inferred, stop and ask before creating the remote.
+
 ## Submodule Split Protocol
 
 Use this when a directory inside a repo should become a separate repository:
 
 1. Confirm the directory should become its own repo and whether history must be preserved.
 2. Check for secrets, large files, ignored files, nested Git dirs, and symlinks.
-3. Create or identify the remote repository before rewriting local structure.
+3. Create or identify the remote repository before rewriting local structure. By default, create a private Gitee repository via Gitee MCP when the repository is a child/submodule extracted from the current work.
 4. If preserving history, prefer `git filter-repo` or a dedicated clone; if not preserving history, initialize a clean repo from the current directory content.
 5. Push the new repo and verify cloneability.
 6. Replace the directory in the parent repo with a submodule:
