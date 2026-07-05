@@ -1,0 +1,4 @@
+interface:
+  display_name: "Miy Git"
+  short_description: "Git repo hygiene and submodule governance"
+  default_prompt: "Use $miy-git to inspect and clean a dirty Git repository before committing or pushing."
