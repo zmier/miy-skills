@@ -1,6 +1,6 @@
 ---
 name: miy-git
-description: Git 仓库治理 Skill。用于检查和清理脏工作树、拆分提交、治理 .gitignore、识别应提交/应忽略文件、处理 submodule gitlink 与内部提交、push 前检查远端状态、为 Gitee/GitHub 仓库创建远端仓库或迁移 submodule 设计安全步骤。适用于用户要求“治理 git”“弄干净仓库”“提交 push”“拆 submodule”“创建新仓库”“接入 mcp-gitee/Gitee MCP”“仓库体积治理”“不要漏 add logs”等场景。
+description: Git 仓库治理与长期运维 Skill。用于检查和清理脏工作树、按主题提交、治理 .gitignore、识别应提交/应忽略文件、维护轻量父仓与 submodule、决定何时 commit/push、验证 gitlink 远端可达、设计 pre-commit/pre-push 守门、创建或迁移 Gitee/GitHub 子仓、控制仓库体积并规划安全历史重建。适用于用户要求“治理 git”“弄干净仓库”“提交 push”“拆 submodule”“维护总库和子库”“设计 hook”“创建新仓库”“接入 Gitee MCP”“仓库体积治理”“不要漏 add logs”等场景。
 ---
 
 # Miy Git
@@ -14,7 +14,23 @@ Use this Skill to turn messy Git state into a clear, reproducible repository sta
 - Separate unrelated work into separate commits. Do not mix workflow edits, vendor/submodule updates, generated caches, and project artifacts in one commit.
 - Treat ignored files as a governance surface. Check whether ignored Markdown logs, TASK records, QC reports, or provenance files should be tracked.
 - Push submodule commits before pushing the parent repository that points at those commits.
+- A parent repository is an orchestrator, not an owner of child-internal work. Child code, dependencies, tests, and local history belong to the child repository.
+- Never publish a parent gitlink that points to a child commit which is only local. Remote reachability is a hard gate.
+- Commit and push are event-driven, not timer-driven: commit a coherent accepted unit; push it in the same work session when it becomes a recovery point or a dependency of another repository.
+- Hooks may reject unsafe operations or print diagnostics. They must not auto-add, auto-commit, auto-push, auto-pull submodules, rewrite history, or delete files.
 - Record what was pushed and what remains intentionally ignored.
+
+## Repository Roles
+
+For a large parent + submodule workspace, classify each boundary before acting:
+
+- `parent/orchestrator`: indexes, shared governance, lightweight cross-project docs, `.gitmodules`, and gitlinks;
+- `child/owner`: project or tool source, tests, dependency declarations, release history, and child-local docs;
+- `local-asset`: ignored PDF/data/generated output kept in the working tree and backed up outside Git;
+- `legacy/archive`: old remote or bundle retained for history lookup, never used for routine pushes;
+- `recovery-anchor`: remote clone, verified bundle, or external file backup used before destructive governance.
+
+Do not infer ownership only from the physical directory name. A project under `Sources/` or `Assets/` may still be an independent child repository.
 
 ## Standard Workflow
 
@@ -40,11 +56,70 @@ Use this Skill to turn messy Git state into a clear, reproducible repository sta
    - inspect inner status with `git -C <submodule> status -sb`;
    - commit and push inner changes first;
    - stage the parent gitlink after the inner commit is reachable remotely;
-   - verify `git submodule status --recursive`.
+   - verify `git diff --cached --submodule=log` and `git submodule status --recursive`.
 6. Push safely:
+   - fetch before deciding whether a branch is ahead/behind; do not hide divergence with a forced pull;
    - push submodules before parent repo;
+   - verify the pushed OID with `git ls-remote` or a fresh fetch;
+   - refuse routine pushes to a remote classified as `legacy/archive`;
    - verify clean `git status -sb` after push;
    - report branch names and commit hashes.
+7. Preserve recovery evidence:
+   - before repo splits, history rewrite, GC, or remote replacement, verify a remote/bundle/file-backup anchor;
+   - compare the user worktree before and after a high-risk operation;
+   - run fresh-clone or isolated UAT before deleting old refs or migration copies.
+
+## Commit And Push Policy
+
+Commit when the change is a coherent, explainable, reversible unit and its minimum relevant checks pass. Good triggers:
+
+- a Task or bug fix reaches an accepted checkpoint;
+- a child commit must become the target of a parent gitlink;
+- before a risky migration, context switch, long pause, or handoff;
+- a governance decision, runbook, or recovery artifact becomes authoritative.
+
+Do not commit every file save, and do not wait for the entire composite workspace to become clean. A large workspace may remain globally dirty while one explicit topic is safely committed.
+
+Push when the commit should become a remote recovery point or be consumed by another repository:
+
+- push an accepted child commit before staging its parent gitlink;
+- push an accepted parent commit in the same work session after all referenced child OIDs are remotely reachable;
+- push before switching machines or ending work on an important accepted checkpoint;
+- keep exploratory/WIP work local or on a dedicated branch until it has a clear recovery meaning.
+
+Never auto-push after every commit. Never batch unrelated child commits and parent docs merely to reduce push count, except when a remote quota or explicit migration plan requires one documented transaction.
+
+For the full parent-child transaction, read [parent-submodule-operations.md](references/parent-submodule-operations.md).
+
+## Branch Policy
+
+- Low-risk personal docs and governance updates may commit directly to the governed default branch when hooks and local checks pass.
+- Child code follows the child repository's own branch/PR policy.
+- `.gitmodules` rewiring, repo splits, remote replacement, and history rewriting use a dedicated branch or repository-external clone.
+- Never merge or rebase an archived old parent history into a newly initialized parent repository with an unrelated root.
+
+## Hook Policy
+
+Recommended minimum:
+
+1. `pre-commit`: block secrets, forbidden binary assets, oversized data, and unexpectedly large files from the staged snapshot.
+2. `pre-push` on the parent: block routine pushes to legacy remotes and reject parent gitlinks whose child OIDs are not reachable from configured child remotes.
+3. Optional diagnostic-only `post-checkout`/`post-merge`: warn about uninitialized or mismatched submodules; do not update them automatically.
+
+Do not require a commit-message hook for a personal knowledge repository unless commit history has become genuinely hard to search. Server-side branch protection or PR review is more suitable when collaborators join.
+
+Read [hook-policy.md](references/hook-policy.md) before adding or changing hooks.
+
+## Long-Term Maintenance
+
+- Per commit: staged diff, secret/asset/size hook, relevant tests.
+- Per parent gitlink update: child commit, child push, remote OID verification, parent pointer commit, parent push.
+- Per work session: fetch/ahead-behind check and push accepted recovery points.
+- Monthly or after abnormal growth: `git count-objects -vH`, parent objects vs `.git/modules`, largest tracked blobs, and remote size review.
+- Before structural migration: external backup, isolated clone, fresh-clone UAT, and explicit rollback evidence.
+- After migration: retain old remote/bundle/migration copies for a defined period; delete only with separate authorization.
+
+Read [large-repository-maintenance.md](references/large-repository-maintenance.md) for size, backup, GC, history rewrite, and recovery rules.
 
 ## When Gitee Is Involved
 
@@ -81,6 +156,8 @@ Use this when a directory inside a repo should become a separate repository:
 7. Commit parent `.gitmodules` and gitlink.
 8. Document how to update the submodule.
 
+After several planned splits, finish all structure changes first and perform at most one parent-history rewrite/GC cycle. Do not rewrite the parent after every child extraction.
+
 ## Red Flags
 
 Stop and ask before continuing when:
@@ -89,6 +166,9 @@ Stop and ask before continuing when:
 - a large binary or dataset appears newly tracked;
 - the cleanup requires force push or history rewriting;
 - submodule commits are local-only and remote push fails;
+- the parent push would publish a gitlink whose child OID is not present on a configured child remote;
+- the selected push remote is a legacy/archive remote;
+- old and new parent repositories have unrelated roots and someone proposes merging them;
 - Gitee repo creation requires a namespace, visibility, or enterprise target that cannot be inferred;
 - there are unrelated user changes in files you would need to edit.
 
@@ -99,4 +179,7 @@ Final reports should include:
 - what was committed and pushed;
 - what remains ignored and why;
 - submodule commits and parent gitlinks if relevant;
+- remote-reachability evidence for every published gitlink;
+- which hooks ran or were intentionally bypassed;
+- backup/bundle/fresh-clone evidence for high-risk operations;
 - any operations not performed, especially force push, history rewrite, repo creation, or Gitee MCP setup.

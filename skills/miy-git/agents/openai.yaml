@@ -1,4 +1,4 @@
 interface:
   display_name: "Miy Git"
-  short_description: "Git repo hygiene and submodule governance"
-  default_prompt: "Use $miy-git to inspect and clean a dirty Git repository before committing or pushing."
+  short_description: "Git hygiene, parent/submodule operations, hooks, and repository lifecycle"
+  default_prompt: "Use $miy-git to inspect the repository graph, classify parent and child ownership, stage by topic, enforce child-before-parent publication, and verify hooks and remote reachability before committing or pushing."
