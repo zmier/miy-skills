@@ -154,3 +154,132 @@ PDF page image / crop image + 模型视觉复核 + QC provenance
 - 一个提交保存 `scholar-pdf-markdown-restoration` 的本次增强。
 
 若暂不整理提交，也可以继续修改，但最终提交时应避免把不相关既有脏状态混入本 Skill 的增强提交。
+
+## 2026-07-05 ReAct: RFS Docling forward-test 后的规则提升
+
+### Trigger
+
+在基金经理研究项目中，对 RFS 论文 `Does Media Coverage of Stocks Affect Mutual Funds Trading and Performance` 开了独立 `TASK02-Docling抽取对比`，用新版 `scholar-pdf-markdown-restoration` 路由思路做 forward-test。
+
+该 TASK 没有覆盖 TASK01，也没有宣称完成 full restoration。它只比较：
+
+- TASK01 pdfplumber paragraph / section scaffold；
+- Docling technical extraction Markdown / JSON；
+- `pymupdf4llm` baseline；
+- 少量 page image spot check。
+
+### Observation
+
+Docling 2.107.0 对 26 页 born-digital / table-heavy RFS PDF 约 30 秒完成 technical extraction。结果：
+
+- 识别 17 个 table objects；
+- 识别 17 个 caption labels；
+- 识别 8 个 formula labels；
+- 对 Table 1-14 等表格生成了比 TASK01 prose dump 更可用的 Markdown / JSON 候选；
+- 对 table inventory、高风险页定位和表格重建初稿有明确增量。
+
+同时发现：
+
+- `table object count != paper table count`；
+- 公式可能输出 `formula-not-decoded`；
+- caption、table note、正文仍会粘连或错序；
+- 标题层级可能误判；
+- 横向表格页可能出现 bbox / provenance clamp warning；
+- Docling candidate 不能替代 page-level visual checked 或 cell-level audited。
+
+### 提升为稳定规则
+
+已提升到 `references/extraction-routing.md` 和 `SKILL.md`：
+
+- 对 RFS / JF / JFE / finance empirical paper、回归表密集论文、TASK 粗抽取中表格被压成 prose dump 的情形，优先触发 Docling technical extraction 作为候选层；
+- 增加 `TASKxx-Docling抽取对比/` 标准结构；
+- 增加 Docling candidate 到 restoration 的进入路径：
+
+```text
+TASK01 paragraph / section scaffold
++ Docling table / object candidate
++ PyMuPDF / pymupdf4llm baseline
++ page image / crop image
+-> table inventory
+-> page-level visual checked
+-> restored Markdown table
+-> optional cell-level audited
+-> restored manuscript transclusion
+```
+
+- 增加 Forward-Test Green / Red 标准；
+- 增加 object inventory、object-mapping risk、high-risk pages、formula-not-decoded、bbox/provenance warning 的 QC 要求；
+- 明确 forward-test 的 Green 是 comparison report / metadata 完整，不是 restored manuscript 完成。
+
+### 仍保留为边界
+
+- 不把 Docling 设为所有 PDF 的默认抽取器；
+- 不把 Docling 输出作为 restored manuscript 主稿；
+- 不把 Docling table object 数量当作论文表格数量；
+- 不把 formula label / formula-not-decoded 视为公式还原；
+- 不把 table Markdown 视为已通过 visual QC；
+- 不强制每篇论文都开 Docling 对比 TASK，只有 table-heavy / technical / first-use / extraction quality unclear 时触发。
+
+## 2026-07-06 ReAct: CASE-260521 weekend effort table-leak 反例
+
+### Trigger
+
+在基金经理研究项目 TASK01 中，`2025 (Not) Everybody's Working for the Weekend A Study of Mutual Fund Manager Effort` 被直接复用轻量 `pdfplumber` 脚本抽取为 `manuscript_paragraphs.md`。用户指出 `[para 191]` 到 `[para 199]` 实际是 Table 2 的回归表行，却被编号成普通自然段。
+
+复查后确认：
+
+```text
+Table 1 begins around PDF page 43 and leaks into numbered paragraphs;
+Table 2 on PDF page 44 leaked into [para 189]-[para 200];
+Table 3 begins on PDF page 45 and leaks from [para 201] onward;
+later main tables and appendix tables also show similar risk.
+```
+
+### Root Cause
+
+本 Skill 已经写明 Docling / 多抽取器可以用于 table-heavy paper，也写明表格不能作为普通 `[para]`。但流程缺少不可绕过的硬闸门：
+
+```text
+PDF input
+  -> SHOULD HAVE: extraction routing gate
+  -> SHOULD HAVE: table-leak scan gate
+  -> THEN: rough extraction / restoration
+```
+
+实际执行时直接走了：
+
+```text
+PDF input
+  -> reuse pdfplumber script
+  -> manuscript_paragraphs.md
+```
+
+因此，问题不是 Docling 表现不符合预期，而是 routing gate 没有触发，table-leak scan 也没有阻止粗稿被继续使用。
+
+### Rule Upgrade
+
+已提升为稳定规则：
+
+- 抽取前必须生成 `logs/extraction-routing-qc.md`；
+- empirical finance / accounting / management paper、表格密集论文、实验设计阅读任务必须考虑 Docling / 多抽取器候选；
+- 抽取后必须执行 table-leak scan；
+- 若 `[para]` 中出现 Table / Panel / 回归列号 / 系数 / 标准误 / N / R2 / 显著性星号等密集表格结构，强制状态为 `table-leak high risk`；
+- `table-leak high risk` 不得称为 `primary reading substrate` 或 `restored manuscript`；
+- 只能作为 `extraction candidate` / `degraded reading draft`，除非关键表已恢复并完成相应视觉 QC。
+
+### Status Vocabulary
+
+新增状态词体系：
+
+```text
+extraction candidate
+rough reading draft
+degraded reading draft
+table-leak high risk
+primary reading substrate
+restored manuscript
+```
+
+### Lesson
+
+Docling 不需要成为所有 PDF 的默认抽取器，但 table-heavy empirical paper 不能再默认走轻量脚本。默认路径必须 fail closed：没有 routing QC 和 table-leak scan，就不能交付为阅读底稿。

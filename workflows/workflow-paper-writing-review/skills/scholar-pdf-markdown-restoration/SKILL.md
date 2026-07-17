@@ -59,6 +59,42 @@ description: 将学术 PDF 抽取、分章节还原为 Markdown，并使用模�
 
 当需要选择抽取器、判断是否使用 Docling technical extraction、记录 extraction metadata 或设计 fallback 时，读取 [extraction-routing.md](references/extraction-routing.md)。
 
+## 本机 Docling 入口
+
+在 `/Users/narra/Documents/alib/Writer` 这套工作区中，Docling 已安装在共享虚拟环境中。优先复用该入口，不要优先用 `uvx --from docling docling` 新建隔离环境。
+
+- Docling CLI：`/Users/narra/Documents/alib/Writer/.venv/bin/docling`
+- Python 入口：`/Users/narra/Documents/alib/Writer/.venv/bin/python`
+- 已验证版本：`docling 2.107.0`（2026-07-09）
+
+推荐命令模板：
+
+```bash
+/Users/narra/Documents/alib/Writer/.venv/bin/docling convert --to md --no-ocr --output outputs/docling "manuscript.pdf"
+```
+
+使用建议：
+
+- 对已有文本层的 born-digital / FineReader OCR PDF，先尝试 `--no-ocr`，保留 PDF 文本层并减少重复 OCR 成本。
+- 对扫描件或文本层明显缺失的 PDF，再启用 `--ocr` 或 `--force-ocr`，并在 routing QC 中说明。
+- 若该入口缺失、版本冲突或任务必须使用新版本，才 fallback 到项目 venv / `uvx` / 其他安装方式，并把实际命令和版本写入 `logs/extraction-routing-qc.md` 或对应 extraction metadata。
+- 不论使用哪个 Docling 入口，其输出状态仍只能从 `extraction candidate` / `rough reading draft` 起步；不得因为使用 Docling 而省略 routing gate、table-leak scan 或必要视觉复核。
+
+## 状态词
+
+本 Skill 必须使用明确状态词，避免把粗抽取稿误当 restored manuscript：
+
+```text
+extraction candidate = 机器抽取候选，只能辅助定位，不可作为主阅读底稿；
+rough reading draft = 正文可粗读，但表格、公式、图像和关键页仍需回 PDF；
+degraded reading draft = 已知存在明显缺陷，只能降级使用；
+table-leak high risk = 表格行/图注/表注被编号为普通 [para]，不能作为经验设计阅读底稿；
+primary reading substrate = 已通过 routing / leak scan / 基础 QC，可进入文献阅读；
+restored manuscript = 完成逐章还原和必要视觉 QC 的可信稿。
+```
+
+除非满足完成标准，不得使用 `primary reading substrate` 或 `restored manuscript`。
+
 ## 核心原则
 
 - `[para N]` 对应 PDF 中一个自然段；标题不占用段落编号。
@@ -67,6 +103,9 @@ description: 将学术 PDF 抽取、分章节还原为 Markdown，并使用模�
 - 抽取前应先判断 PDF 类型和任务深度；text-heavy、table-heavy、formula-heavy、scanned、back-matter-heavy PDF 可以走不同粗抽取路线。
 - Docling / PyMuPDF / `pymupdf4llm` / `pdftotext` / `pypdf` 等工具只能作为候选抽取器或 second opinion，不能替代视觉复核和 restored Markdown 的完成标准。
 - 对 table-heavy / formula-heavy / technical born-digital PDF，可用 Docling technical extraction 生成结构化候选；但 `extraction_method = docling` 不等于 `visual checked` 或 `cell-level audited`。
+- 对首次使用 Docling 的论文类型、表格密集论文或抽取器效果不明的任务，应先开独立 forward-test / comparison TASK；不得用 Docling 输出覆盖已有 paragraph / section scaffold。
+- Docling table object 数量不等于论文表格数量；必须记录 object-mapping risk，并用 PDF page image 判断表号、panel、caption、notes 和跨页边界。
+- 若 Docling 输出 `formula-not-decoded` 或 bbox / provenance warning，该对象或页面必须标为 high-risk，不能进入公式还原或表格核验完成状态。
 - 原文顺序优先于 Markdown 美观；任何重排、合并或省略都要能从 PDF 结构中解释。
 - 脚本只是粗抽取工具；逐章还原时应主动使用模型的语言、数学、视觉和版面理解能力修复 Markdown。
 - 对复杂或高风险页面，优先对照渲染后的 PDF 页面图进行 vision-first 还原；不要把机器抽取结果当作权威原文。
@@ -82,6 +121,73 @@ description: 将学术 PDF 抽取、分章节还原为 Markdown，并使用模�
 - 对单篇项目的最终可审读稿，可以逐章直接修订 Markdown；若发现系统性错误，再回头改脚本或规则并重跑。
 - 被用于正式审稿判断、逐段批注或审稿意见定位的段落，必须在 QC 记录中标为已按 PDF 核验。
 - 单篇稿件中的特殊规则只写入项目 TASK；反复出现的规则才回流到 workflow / Skill。
+
+## Preflight / Extraction Routing Gate
+
+任何 PDF 抽取前，必须先完成 routing gate，并写入 `logs/extraction-routing-qc.md`。不得跳过 routing gate 直接复用默认脚本。
+
+`extraction-routing-qc.md` 至少记录：
+
+- PDF 类型：
+  - `text-heavy`
+  - `table-heavy`
+  - `formula-heavy`
+  - `scanned`
+  - `back-matter-heavy`
+  - `mixed`
+- 任务深度：
+  - `quick extraction candidate`
+  - `rough reading draft`
+  - `primary reading substrate`
+  - `full restoration`
+  - `cell-level table audit`
+- 是否为 empirical finance / accounting / management paper；
+- 是否存在多张回归表、summary statistics、appendix tables、figure/table placeholders；
+- 是否会在后续任务中使用变量定义、系数、显著性、样本量、R2、机制表或 robustness 表；
+- 默认抽取器是否足够；
+- 是否触发 Docling / `pymupdf4llm` / PyMuPDF / `pdftotext` / OCR / vision-first fallback；
+- 输出允许进入的最高状态词。
+
+### Docling / 多抽取器触发条件
+
+若满足以下任一条件，必须考虑 Docling technical extraction 或多抽取器候选；若决定不用，必须在 `extraction-routing-qc.md` 中说明原因：
+
+- empirical finance / accounting / management paper；
+- 正文或 appendix 有多张回归表、summary statistics 或 robustness tables；
+- PDF 或粗抽取中出现 `Table`、`Panel`、`(1) (2) (3)`、系数、标准误、`N`、`R2`、显著性星号等密集结构；
+- 用户目标是实验设计、变量构造、识别策略学习、机制/异质性/稳健性提取；
+- 研究判断会依赖表格或图形证据；
+- 首轮抽取器效果不明，或已有抽取出现 table prose dump / table-leak。
+
+Docling / 多抽取器输出只能作为 `extraction candidate` 或结构化 second opinion，不能直接替代视觉复核和 restored Markdown。
+
+## Post-Extraction Table-Leak Scan Gate
+
+任何生成 `manuscript_paragraphs.md` 或分章稿后，必须执行 table-leak scan，并将结果写入 `logs/table-leak-qc.md` 或 `logs/table-visual-qc.md`。
+
+扫描至少检查：
+
+- `[para N]` 中是否出现 `Table N`、`Panel A/B/C`、`(1) (2) (3)`、`N`、`R2`、standard errors、显著性星号；
+- 是否存在连续多段短行呈现回归表行；
+- 是否有 summary statistics / correlation matrix / PCA / appendix table 被编号为普通自然段；
+- 表格、图题、图注、表注、figure/table placeholders 是否混入普通正文；
+- References / appendix / back matter 是否被误分为正文 section。
+
+若 table-leak scan 命中，强制状态为：
+
+```text
+table-leak high risk
+not restored manuscript
+not primary reading substrate for empirical design extraction
+```
+
+此时必须：
+
+- 在 README / TASK / QC 中明示 `table-leak high risk`；
+- 建立 table inventory 或至少列出已知受影响页；
+- 把可修复表格移入 `outputs/tables-restored/table-XX.md`，正文位置使用 transclusion；
+- 若只完成 page-level visual check，不得写成 `cell-level audited`；
+- 在后续交给 `research-literature-reader` 时声明它只能作为 candidate / degraded draft，除非关键表已恢复。
 
 ## 大模型视觉复核硬门槛
 
@@ -211,25 +317,26 @@ pix.save("outputs/figures-restored/figure-01.png")
 ## 工作流
 
 1. 定位文件：读取 PDF、抽取产物、抽取日志、脚本和 TASK 说明。
-2. 做 PDF 类型与任务深度诊断；如需选择抽取器或 fallback，读取 [extraction-routing.md](references/extraction-routing.md)。
+2. 做 PDF 类型与任务深度诊断；读取 [extraction-routing.md](references/extraction-routing.md)，并生成或更新 `logs/extraction-routing-qc.md`。没有 routing QC，不得进入默认抽取脚本。
 3. 做 preflight：确认粗抽取器、页面渲染工具和 page image 路径可用，并记录到 extraction / restoration QC。
-4. 如无抽取产物，创建或复用项目内脚本，生成分章节 Markdown、back matter/raw 输出、图像/图表素材、metadata 和 extraction log。
-5. 对复杂图表或公式 PDF，可生成多抽取器候选，例如 Docling technical output 与 PyMuPDF / `pymupdf4llm` baseline，并标记来源。
+4. 根据 routing gate 选择抽取路线。如无抽取产物，创建或复用项目内脚本，生成分章节 Markdown、back matter/raw 输出、图像/图表素材、metadata 和 extraction log。
+5. 对复杂图表或公式 PDF、empirical finance / accounting / management paper、表格密集论文、实验设计阅读任务，生成多抽取器候选，例如 Docling technical output 与 PyMuPDF / `pymupdf4llm` baseline，并标记来源；若是首次使用 Docling 或需要比较效果，先按 `extraction-routing.md` 开独立 Docling 抽取对比 TASK。
 6. 建立可人工修订的还原稿目录，例如 `outputs/sections-restored/` 和 `outputs/manuscript_restored.md`。
 7. 建立或更新 `logs/restoration-qc.md`；如果项目已有命名约定，也可使用 `logs/segmentation-qc.md`。
-8. 做全局结构检查：
+8. 做 post-extraction table-leak scan，生成 `logs/table-leak-qc.md` 或更新 `logs/table-visual-qc.md`；若命中，强制标记 `table-leak high risk`，并不得把该稿交付为 primary reading substrate。
+9. 做全局结构检查：
    - 标题顺序是否完整；
    - 段落编号是否连续；
    - 正文与 back matter 是否分离；
    - 正文顺序是否与 PDF 一致；
    - 是否存在明显重复、缺失、半句开头、错序、乱码或公式碎片。
-9. 建立视觉复核素材：
+10. 建立视觉复核素材：
    - 渲染所有表格页、图像页、公式高风险页和跨页边界页；
    - 将页面图保存到 `outputs/page-images/`；
    - 对表格密集论文生成 contact sheet；
    - 若本轮有表格或图像，必须在继续前确认 page image 可打开。
-10. 对需要视觉核验的章节，读取 [vision-restoration-rules.md](references/vision-restoration-rules.md)，按 rendered PDF page image 做 vision-first 还原；表格、图像和跨页对象不得跳过视觉复核。
-11. 逐章进行模型还原修订：
+11. 对需要视觉核验的章节，读取 [vision-restoration-rules.md](references/vision-restoration-rules.md)，按 rendered PDF page image 做 vision-first 还原；表格、图像和跨页对象不得跳过视觉复核。
+12. 逐章进行模型还原修订：
    - 对照 PDF 页面修复正文错字、漏句、错序、断段和误标题；
    - 按全文语义结构修正标题层级，不按字体大小机械判断；
    - 对每个跨页边界检查自然段是否断裂、重复或漏句；
@@ -240,18 +347,19 @@ pix.save("outputs/figures-restored/figure-01.png")
    - 将表格转为 Markdown table 文件，同时保留表题、注释、显著性说明和 PDF 页码；
    - 正文插表位置应嵌入 Markdown table 文件，而不是优先嵌入截图；
    - 保留 `[para N]`，但不让公式、图片或表格占用正文段落编号。
-12. 对图表执行多源处理：
+13. 对图表执行多源处理：
    - 使用 Docling / PyMuPDF / `pymupdf4llm` 输出作为对象发现和结构化候选；
    - 以 PDF page image / crop image 作为最终视觉权威；
    - 在 QC 中记录 `docling candidate`、`pymupdf candidate`、`page-level visual checked`、`cell-level audited` 等状态；
+   - 记录 object inventory、object-mapping risk、high-risk pages、formula-not-decoded 和 bbox/provenance warning；
    - 不得用抽取器输出替代视觉复核状态。
-13. 还原 back matter：
+14. 还原 back matter：
    - 对照 PDF 检查 Conclusion 之后是否有 Conflict of Interest Statement、References、Data Availability、Funding、Acknowledgments、Appendix 等；
    - 将这些内容加入主 restored manuscript 的末尾；
    - 如存在逐章节输出，则创建独立 back matter section 文件，例如 `sections-restored/26-references.md`；
    - 不给 back matter 条目分配 `[para N]`；
    - 若参考文献只存在于 raw back matter 而未并入 restored manuscript，视为未完成。
-14. 做高风险区域核查：
+15. 做高风险区域核查：
    - Abstract；
    - Introduction 首尾；
    - 理论假设；
@@ -262,13 +370,13 @@ pix.save("outputs/figures-restored/figure-01.png")
    - Conclusion；
    - References / back matter 起止页；
    - 跨页段落。
-15. 做图表视觉复核并写入日志：
+16. 做图表视觉复核并写入日志：
    - 表格至少生成或更新 `logs/table-visual-qc.md`；
    - 图像至少生成或更新 `logs/figure-visual-qc.md`；
    - 每张表/图必须有对象编号、PDF 页码、page image 路径、复核状态和剩余风险；
    - 若只完成页面级复核，写 `page-level visual checked`，不要写成 `cell-level audited`；
    - 若发现作者正文叙述与 PDF 表格不一致，必须在 QC 中单列为 `author-prose-conflict` 或同类标签。
-16. 给每个错误打标签：
+17. 给每个错误打标签：
    - `text-error`：文字识别错误、乱码、特殊字符错误或词语被错误改写；
    - `order`：文本顺序与 PDF 不一致；
    - `split`：一个自然段被拆成多个 `[para]`；
@@ -282,9 +390,9 @@ pix.save("outputs/figures-restored/figure-01.png")
    - `footnote`：脚注、尾注或声明位置错误；
    - `backmatter`：参考文献、附录或声明缺失、只留 raw 未并入 restored、或混入正文编号；
    - `noise`：页眉页脚、页码、行号或系统水印混入正文。
-17. 对系统性错误修复规则或脚本，必要时重跑抽取命令；不要用重跑替代逐章还原。
-18. 复查受影响区域，并确认没有引入新的错段或错序。
-19. 汇总 QC 状态，说明是否可进入审稿阅读或写作分析阶段；如果视觉复核仍未完成，只能说明“可作为粗底稿”，不能说明“完整还原完成”。
+18. 对系统性错误修复规则或脚本，必要时重跑抽取命令；不要用重跑替代逐章还原。
+19. 复查受影响区域，并确认没有引入新的错段或错序。
+20. 汇总 QC 状态，说明是否可进入审稿阅读或写作分析阶段；如果 routing / table-leak scan / 视觉复核仍未完成，只能说明“可作为 extraction candidate / 粗底稿”，不能说明“完整还原完成”。
 
 ## 推荐输出
 
@@ -302,10 +410,14 @@ pix.save("outputs/figures-restored/figure-01.png")
 - `outputs/*_back_matter_raw.md`
 - `outputs/*_figures_tables.md`
 - `logs/extraction-log.md`
+- `logs/extraction-routing-qc.md`
+- `logs/table-leak-qc.md`
 - `logs/restoration-qc.md`
 - `logs/segmentation-qc.md`
 - `logs/table-visual-qc.md`
 - `logs/figure-visual-qc.md`
+- `outputs/comparison-report.md`（当本轮是抽取器 forward-test 时）
+- `outputs/metadata.json`（包含 extraction method / mode / tool versions / object inventory / high-risk pages）
 
 QC 记录至少包含：
 
@@ -313,6 +425,9 @@ QC 记录至少包含：
 - 本轮核查日期；
 - PDF 类型、任务深度、抽取工具、脚本和命令；
 - extraction method / extraction mode / fallback events / tool versions；
+- routing decision、允许进入的最高状态词、是否触发 Docling / 多抽取器；
+- table-leak scan 结果和已知受影响页；
+- object inventory、object-mapping risk、high-risk pages 和抽取器 warning；
 - 抽查范围和全检范围；
 - 错误清单；
 - 修复动作；
@@ -330,6 +445,8 @@ QC 记录至少包含：
 ## 完成标准
 
 - Markdown 正文顺序、标题层级、自然段和原始措辞忠实于 PDF。
+- 已完成 `extraction-routing-qc.md`；没有 routing QC 的稿件不得称为 primary reading substrate。
+- 已完成 table-leak scan；若命中 `table-leak high risk`，不得称为 primary reading substrate 或 restored manuscript。
 - 已生成按章节组织的 Markdown；如果没有逐章节文件，QC 记录需说明单文件总稿为何足够。
 - 正文段落编号连续，且标题不占用编号。
 - 高风险页和跨页边界已按 rendered PDF page image 做视觉核验。
@@ -339,6 +456,8 @@ QC 记录至少包含：
 - 公式已完整还原为 `$$...$$` LaTeX，且不再停留在 raw equation block。
 - Figure 图像已精准裁剪并用 Obsidian 图片语法嵌入正文或对应章节。
 - 表格已尽可能还原为 Markdown 表；复杂表格至少有可显示截图、表题、注释和页码。
+- 若使用 Docling，已明确区分 `docling candidate`、`page-level visual checked` 和 `cell-level audited`；不得把 Docling table object 直接视为已还原表格。
+- 若本轮只是 Docling / 多抽取器 forward-test，完成标准是 comparison report 和 metadata 完整，而不是 restored manuscript 完成。
 - 表格最终状态不得停留在 `needs visual QC` / `pending visual QC`，除非本轮明确按失败或降级结束。
 - References、Conflict of Interest Statement、Data Availability、Funding、Acknowledgments、Appendix 等 back matter 已作为独立 restored section 保留，不占用 `[para N]`，且没有只停留在 raw back matter。
 - 脚注和 back matter 有合理处理，并说明与正文的关系。
@@ -346,6 +465,13 @@ QC 记录至少包含：
 - 已发现的系统性错误通过脚本或规则修复；单章局部错误直接在 restored Markdown 中修订。
 - QC 记录说明哪些文本和段落已经可信，哪些区域仍需谨慎。
 - 项目 README 或 TASK 说明能指向最新段落底稿和 QC 记录。
+
+## 禁止事项
+
+- 禁止绕过 routing gate 直接运行默认抽取脚本。
+- 禁止在没有 `extraction-routing-qc.md` 和 table-leak scan 的情况下，把 `manuscript_paragraphs.md` 标为 primary reading substrate。
+- 禁止把 table-heavy empirical paper 的 `pdfplumber` / raw text prose dump 当成可直接进入实验设计阅读的底稿。
+- 禁止把 table-leak 行保留为普通 `[para]` 后继续做变量、识别或结果表提取。
 
 ## 失败与降级
 

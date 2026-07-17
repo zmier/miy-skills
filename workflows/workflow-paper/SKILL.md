@@ -21,6 +21,24 @@ description: 论文研究总父 workflow 型 Skill。用于把学论文、写论
 
 本 workflow 当前只做最小父层路由，不提前展开复杂主轴。
 
+## 学论文的两种语境
+
+`学论文` 可以是独立学习，也可以嵌入某个研究项目。
+
+```text
+独立学论文：
+  目标是读懂一篇论文、拆模板、学写法或生成个人阅读资产；
+  不要求存在 task / route / node；
+  不强制项目回挂。
+
+项目内学论文：
+  目标是服务当前 research project / task / route / node；
+  需要判断文献对 claim、proxy、data need、design option、threat 或 writing pattern 的贡献；
+  应路由到 workflow-research/skills/research-literature-reader 管资产沉淀和回挂。
+```
+
+不要把两种语境混在一起：项目内读文献需要回到项目资产图；独立读论文只需保留用户要求的论文级产物。
+
 ## 设计原则
 
 `workflow-paper` 组合通用引擎，而不继承或收编通用引擎。
@@ -45,7 +63,8 @@ PaperWorkflow extends ArgumentEngine
 
 | 用户意图 | 路由 | 当前动作 |
 |---|---|---|
-| 学某篇论文、学一批基础文献、拆模板文献 | `subworkflows/workflow-paper-learning` | 进入学论文子 workflow |
+| 独立学某篇论文、学一批基础文献、拆模板文献 | `subworkflows/workflow-paper-learning` | 进入学论文子 workflow，不强制 task / node 回挂 |
+| 围绕研究项目、当前 task、candidate route 或 node 读文献 | `workflow-research/skills/research-literature-reader` | 由研究项目文献阅读编排层管理 paper-reading、资产沉淀和项目回挂 |
 | 写论文、搭选题、写引言、理论机制、方法或结果叙事 | `workflow-paper-writing` | 暂未创建；先记录需求并可组合 `workflow-argument-validity` 与已有写作 Skill |
 | 审稿、投稿前自审、检查贡献链是否成立 | `workflow-paper-review` | 暂未创建；现阶段可组合 `workflow-argument-validity` 与既有 `workflow-paper-writing-review` |
 | 返修、回复审稿人、整合导师批注 | `workflow-paper-revision` | 暂未创建；先组合现有修订类 Skill |
@@ -58,6 +77,7 @@ PaperWorkflow extends ArgumentEngine
 - 旧 `workflow-paper-writing-review` 保留为论文审稿/写作审查相关能力库；
 - 新 `workflow-paper` 先作为更高层父入口，后续再决定是否迁移、挂接或重命名旧能力；
 - `workflow-argument-validity` 保持跨领域通用，不移动到本目录下。
+- 项目型文献阅读由 `workflow-research/skills/research-literature-reader` 承接；`workflow-paper` 只判断它属于“学论文”大类，不接管 task / route / node 回挂。
 
 ## 子 Workflows
 
@@ -72,11 +92,13 @@ PaperWorkflow extends ArgumentEngine
 ```text
 本次属于哪一路；
 需要组合哪些底层引擎；
+本次是独立学论文，还是项目内学论文；
 预期产物是什么；
+若是项目内学论文，交给哪个 research project / task / route / node 语境继续沉淀；
 哪些内容暂时只记录为待设计，不展开。
 ```
 
 ## 构思日志
 
 - `logs/2026-06-25-minimal-paper-workflow.md`
-
+- `logs/2026-07-08-project-embedded-paper-learning-boundary.md`
