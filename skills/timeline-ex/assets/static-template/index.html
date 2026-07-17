@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>External Timeline</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/vis-timeline@8.5.2/styles/vis-timeline-graph2d.min.css"
+    />
+    <link rel="stylesheet" href="timeline.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="eyebrow">PROJECT · EXTERNAL INTERFACE</div>
+      <div class="hero-row">
+        <div>
+          <h1 id="project-title">External Timeline</h1>
+          <p id="project-subtitle">外部事件、义务、Gate 与结果</p>
+        </div>
+        <span class="updated"><i></i><span id="updated-at">加载中</span></span>
+      </div>
+    </header>
+
+    <main>
+      <section id="summary-grid" class="summary-grid" aria-label="项目摘要"></section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div><span>LIFECYCLE CHAIN</span><h2>外部状态转换</h2></div>
+          <p>箭线表达资格和状态关系，不代表活动持续时间。</p>
+        </div>
+        <div id="route-chain" class="route-chain"></div>
+      </section>
+
+      <section class="panel panel--timeline">
+        <div class="section-heading section-heading--controls">
+          <div><span>CHRONOLOGICAL VIEW</span><h2>真实时间视图</h2></div>
+          <div class="toolbar">
+            <div class="filters">
+              <button class="chip is-active" data-filter="all" type="button">全部</button>
+              <button class="chip" data-filter="event" type="button">事件</button>
+              <button class="chip" data-filter="obligation" type="button">义务</button>
+              <button class="chip" data-filter="gate" type="button">Gate</button>
+              <button class="chip" data-filter="outcome" type="button">结果</button>
+            </div>
+            <button id="fit-all" class="tool" type="button">查看全程</button>
+            <button id="go-today" class="tool" type="button">回到今天</button>
+          </div>
+        </div>
+        <div class="legend">
+          <span><i class="dot dot--event"></i>EVT</span>
+          <span><i class="dot dot--obligation"></i>OBL</span>
+          <span><i class="dot dot--gate"></i>GATE</span>
+          <span><i class="dot dot--outcome"></i>OUT</span>
+          <span><i class="dash"></i>暂定 / 条件窗口</span>
+        </div>
+        <div id="timeline-status" class="timeline-status" hidden></div>
+        <div id="timeline" class="timeline"></div>
+        <p id="timeline-note" class="timeline-note"></p>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div><span>NODE REGISTER</span><h2>节点清单</h2></div>
+          <p>点击一行查看前置条件、状态转换与证据入口。</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>节点</th><th>时间</th><th>状态</th><th>前置条件</th><th>影响 TASK</th></tr></thead>
+            <tbody id="node-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div id="drawer-backdrop" class="backdrop" hidden></div>
+    <aside id="drawer" class="drawer" aria-hidden="true">
+      <button id="drawer-close" class="drawer-close" type="button" aria-label="关闭">×</button>
+      <div id="drawer-content"></div>
+    </aside>
+
+    <script src="https://cdn.jsdelivr.net/npm/vis-timeline@8.5.2/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <script src="timeline-data.js"></script>
+    <script src="timeline.js"></script>
+  </body>
+</html>

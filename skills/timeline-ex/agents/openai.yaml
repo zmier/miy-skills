@@ -1,0 +1,4 @@
+interface:
+  display_name: "Timeline-Ex"
+  short_description: "把外部事件、义务、Gate 与结果编排成可追溯生命周期时间线"
+  default_prompt: "Use $timeline-ex to turn external notices, obligations, gates, and outcomes into a traceable HTML lifecycle timeline."
