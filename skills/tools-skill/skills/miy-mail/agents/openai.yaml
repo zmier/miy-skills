@@ -1,0 +1,4 @@
+interface:
+  display_name: "Miy Mail"
+  short_description: "Manage Markdown email threads and replies"
+  default_prompt: "Use $miy-mail to create a tracked Markdown email thread for a research task."
