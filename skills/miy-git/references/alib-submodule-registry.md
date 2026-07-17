@@ -23,11 +23,10 @@ Never rely on the snapshot table alone for a push decision. Reconcile it against
 
 ## Top-Level Registry
 
-Snapshot: 2026-07-17, 19 top-level entries. An omitted `.gitmodules` branch means “follow the child repository's governed default/upstream”; do not guess `main` or `master` from the omission.
+Snapshot: 2026-07-17, 18 top-level entries. An omitted `.gitmodules` branch means “follow the child repository's governed default/upstream”; do not guess `main` or `master` from the omission.
 
 | Path | Remote | Role | Branch policy / note |
 |---|---|---|---|
-| `ALink/ALTock` | `git@gitee.com:azen/ALTock.git` | first-party child | child default/upstream |
 | `ALink/Lib/ALMet` | `git@gitee.com:azen/ALMethod.git` | first-party library | path and remote name intentionally differ |
 | `ALink/.obsidian/plugins/ALPlugin` | `git@gitee.com:azen/alplugin.git` | first-party plugin | child default/upstream |
 | `Writer/.obsidian/plugins/note-merger` | `git@github.com:zmier/note-merger.git` | external/forked plugin | treat child policy as authoritative |
@@ -36,7 +35,7 @@ Snapshot: 2026-07-17, 19 top-level entries. An omitted `.gitmodules` branch mean
 | `Writer/00 信息/工具/CLI_config` | `git@gitee.com:azen/cli_config.git` | first-party config tool | child default/upstream |
 | `Writer/.obsidian/plugins/advanced-canvas` | `git@github.com:zmier/obsidian-advanced-canvas.git` | external/forked plugin | treat child policy as authoritative |
 | `Writer/00 信息/miy-skills` | `git@github.com:zmier/miy-skills.git` | first-party Skill/workflow library | current governed working branch is discovered live |
-| `Writer/02 Sources/SMK` | `git@gitee.com:azen/SMK.git` | first-party stock/data engineering project | independent project despite living under Sources |
+| `Writer/02 Sources/SMK` | `git@gitee.com:azen/SMK.git` | first-party stock/data engineering project | independent project despite living under Sources; contains the read-only ALTock snapshot migrated under `J-260717`; the legacy ALTock remote is retained for rollback |
 | `Writer/03 Projects/260521-投顾研究` | `git@github.com:zmier/PRO-Inv-Adv-marketing.git` | first-party project | child default/upstream |
 | `Writer/03 Projects/260521-基金经理研究` | `git@gitee.com:azen/fund-manager-research.git` | first-party research project | `.gitmodules` pins branch `main`; ongoing but currently paused; licensed data and binary assets stay local + miku |
 | `Writer/03 Projects/2026-学位/MPA` | `git@gitee.com:azen/mpa.git` | first-party project | child default/upstream |
