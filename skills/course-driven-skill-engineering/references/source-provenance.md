@@ -164,3 +164,32 @@
 - 将用户提醒上抽为 reference 层级设计规则；
 - 把总链路写入 `textbook-learning-project-workflow.md`；
 - 保留 `atomized-reading-to-quiz-workflow.md` 作为更细的执行协议。
+
+## 真实研究项目：跨 Skill Dialogue Insight 反哺
+
+- 记录日期：2026-07-14
+- 来源类型：真实项目复盘、对话洞见与 field-discovery
+- 项目路径：`/Users/narra/Documents/alib/Writer/03 Projects/260521-基金经理研究`
+- 关键证据：TASK00-1 route seminar、TASK09-22 protocol repair、TASK11 independent audit、TASK00 portfolio sync
+- 迁移目标：验证 dialogue-insight、single semantic owner、source provenance 和 structural/forward-test 分层
+- 新增文件：`workflow-research/references/evidence-gated-route-adjudication.md`、对应 dialogue、template、evaluation
+- 影响文件：`task-driven-project-manager`、`research-brainstorm`、`research-roadmap`、`workflow-research`、`workflow-tao`
+- 迁移状态：`structural-green / forward-test-pending`
+
+### 采纳内容
+
+- 对话中出现“多个 Skill 都能反哺”时，先保存原始困惑，再指定中央语义所有者；
+- case 保存事实，dialogue 保存共同发现，reference 保存完整通用协议，消费 Skill 只保留职责内路由；
+- 来源案例参与提炼，只能证明 structural-green；
+- 是否创建新 Skill 需要独立职责和新案例迁移证据，不能由一次完整实践自动触发。
+
+### 未采纳内容
+
+- 基金研究的具体估计、样本、变量、数据库和下一假说；
+- 将所有案例流程直接复制到每个 Skill；
+- 立即创建 `research-route-governance` 新 Skill；
+- 将来源案例结构回归误写为 validated。
+
+### 对 course-driven-skill-engineering 的判断
+
+本案例验证了现有 `dialogue-insight` 与 provenance 协议能够承接跨 Skill 反馈，因此本轮不修改其主 `SKILL.md`。新增 provenance 记录即可；这也是“不为反哺而强行修改所有入口”的回归边界。

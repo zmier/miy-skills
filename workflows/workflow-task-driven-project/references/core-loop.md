@@ -92,6 +92,20 @@ Thought / Action / Observation / Reflection
 复盘沉淀：仅个案保留 / 可迁移 / 需要更多样本。
 ```
 
+### Portfolio Gate
+
+如果一个阶段结束后不是自然进入唯一下一步，而是留下多个竞争 workstreams，则在 `Review Phase` 与下一次 `Scaffold` 之间插入 portfolio gate：
+
+```text
+Freeze candidate set
+-> pull evidence from owning TASKs
+-> compare value / maturity / feasibility / information gain / risk
+-> continue / diagnostic / monitor / hold / archive
+-> promote one route or stop
+```
+
+使用 standing `TASK00-project-governance` 保存 registry、portfolio、dated review 和 decision log。不要因为某条路线最近、最醒目或局部显著，就跳过比较直接新开 TASK。
+
 ## Review Phase
 
 阶段完成后写：

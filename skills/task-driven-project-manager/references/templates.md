@@ -149,6 +149,158 @@ subtasks/
 ## 下一步
 ```
 
+## Default Task Lineage Map Template
+
+Use this by default for multi-task projects, nested subtasks, multi-agent workstreams, or exploratory projects where task order may evolve.
+
+````markdown
+# Task Lineage Map
+
+> 状态：active  
+> 日期：YYYY-MM-DD  
+> 目的：提供项目任务树的可视化入口。
+
+## 读图说明
+
+Mermaid `click` 是否可用取决于渲染器。本文同时提供 Mermaid clickable nodes 和普通 Markdown 链接表。
+
+## 任务谱系图
+
+```mermaid
+flowchart TD
+  ROOT["Project<br/>opened: YYYY-MM-DD"]
+  T01["TASK01<br/>problem framing<br/>status: accepted"]
+  T02["TASK02<br/>data build<br/>status: active"]
+  T03["TASK03<br/>design / analysis<br/>status: next"]
+  S0301["TASK03-1<br/>subtask A<br/>status: waiting"]
+  S0302["TASK03-2<br/>subtask B<br/>status: waiting"]
+
+  ROOT --> T01
+  ROOT --> T02
+  ROOT --> T03
+  T03 --> S0301
+  T03 --> S0302
+
+  click ROOT "../README.md" "打开项目 README"
+  click T01 "../tasks/TASK01-name/README.md" "打开 TASK01"
+  click T02 "../tasks/TASK02-name/README.md" "打开 TASK02"
+  click T03 "../tasks/TASK03-name/README.md" "打开 TASK03"
+```
+
+## 稳定跳转表
+
+| 节点 | 状态 | 文档 |
+|---|---|---|
+| Project | active | [README.md](../README.md) |
+| TASK01 | accepted | [TASK01](../tasks/TASK01-name/README.md) |
+| TASK02 | active | [TASK02](../tasks/TASK02-name/README.md) |
+| TASK03 | next | [TASK03](../tasks/TASK03-name/README.md) |
+
+## 更新规则
+
+- 新增、冻结、接受或阻塞任务时更新本图。
+- 若任务结构发生含义变化，例如降级、拆父、迁移或解释边界变化，另建 project change map。
+````
+
+## Project Change Map Template
+
+Use this when an exploratory project changes structure because new evidence changes task scope, sample definition, interpretation, or downstream gates.
+
+````markdown
+# TASKxx Project Change Map
+
+> 状态：v1  
+> 日期：YYYY-MM-DD  
+> 父任务：`../TASKxx-说明.md`  
+> 目的：记录任务谱系、变更触发、旧结果冻结和后续入口。
+
+## 读图说明
+
+Mermaid `click` 是否可用取决于渲染器。本文同时提供 Mermaid clickable nodes 和普通 Markdown 链接表。
+
+## 时间标注规则
+
+- 图中标注关键阶段日期：opened、accepted / frozen、restructured、next gate。
+- 表中标注变更日期；若同一天内存在多个顺序敏感动作，再使用具体时间。
+- 历史运行命令和细粒度日志时间以各自 evidence ledger / log 为准，本文只记录项目结构层面的时间。
+
+## 任务谱系图
+
+```mermaid
+flowchart TD
+  TXX["TASKxx 父任务<br/>opened: YYYY-MM-DD<br/>restructured: YYYY-MM-DD"]
+  TXX1["TASKxx-1<br/>frozen first-pass ledger<br/>accepted / frozen: YYYY-MM-DD"]
+  TXX2["TASKxx-2<br/>new evidence amendment<br/>opened: YYYY-MM-DD"]
+  NEXT["TASKxx-3?<br/>revised implementation<br/>next gate: after ..."]
+
+  TXX --> TXX1
+  TXX --> TXX2
+  TXX1 -. prior evidence .-> NEXT
+  TXX2 -. gate .-> NEXT
+
+  click TXX "../README.md" "打开父任务"
+  click TXX1 "../subtasks/TASKxx-1-first-pass/README.md" "打开 frozen ledger"
+  click TXX2 "../subtasks/TASKxx-2-amendment/README.md" "打开 amendment"
+```
+
+## 变更路径图
+
+```mermaid
+flowchart LR
+  A["原设计 / 原假设"]
+  B["first-pass evidence"]
+  C["new evidence / requirement change"]
+  D["scope / sample / treatment / interpretation amendment"]
+  E["revised gate"]
+
+  A --> B
+  C --> D
+  B --> D
+  D --> E
+```
+
+## 稳定跳转表
+
+| 节点 | 文档 |
+|---|---|
+| 父任务 | [README.md](../README.md) |
+| 变更说明 | [docs/restructure-map.md](../docs/restructure-map.md) |
+| frozen ledger | [subtasks/TASKxx-1-first-pass/README.md](../subtasks/TASKxx-1-first-pass/README.md) |
+| amendment | [subtasks/TASKxx-2-amendment/README.md](../subtasks/TASKxx-2-amendment/README.md) |
+
+## 变更追踪表
+
+| 变更项 | 变更日期 | 原口径 | 新口径 | 处理方式 | 证据 |
+|---|---|---|---|---|---|
+| TASKxx 角色 | YYYY-MM-DD | 单一任务 | 父任务 / umbrella | 更新 README 和 logs |  |
+| first-pass 结果 | YYYY-MM-DD | 主结果 | frozen evidence ledger | 迁入 TASKxx-1 |  |
+| 新信息 | YYYY-MM-DD | 未纳入 | amendment gate | 新开 TASKxx-2 |  |
+
+## 路径迁移表
+
+| 迁移日期 | 旧路径 | 新路径 |
+|---|---|---|
+| YYYY-MM-DD | `outputs/` | `subtasks/TASKxx-1-first-pass/outputs/` |
+| YYYY-MM-DD | `logs/log.md` | `subtasks/TASKxx-1-first-pass/logs/log.md` |
+| YYYY-MM-DD | `subtasks/TASKxx-A/` | `subtasks/TASKxx-1-first-pass/subtasks/TASKxx-1-A/` |
+
+## 甘特图是否必要
+
+本次更适合 lineage / change-path 图，而不是甘特图。若问题变成排期，再补 Mermaid Gantt。
+````
+
+## Standing TASK00 Project Governance Template
+
+Use this only when a project has several evidence-backed competing workstreams and needs a portfolio gate before opening the next substantive TASK. It is not a default burden for small linear projects.
+
+Copyable scaffold:
+
+```text
+../assets/standing-task00-governance-template.md
+```
+
+The template includes TASK00 README, Portfolio Roadmap, Task Lineage Map, task registry, workstream portfolio, decision log, dated review, ReAct log, and governed-TASK backlink snippets. Read `standing-project-governance.md` before applying it.
+
 ## Makefile Template
 
 ```makefile

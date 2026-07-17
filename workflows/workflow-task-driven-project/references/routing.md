@@ -27,12 +27,29 @@ Green 后进入下一阶段、终止，还是反哺 workflow/skill？
 | 项目尚未成形 | project root | 创建 README、TASK 总说明、Makefile、tests、tasks |
 | 新阶段有独立目标 | `tasks/TASKxx-*` | 创建顶层 TASK |
 | 同一阶段内部新问题 | `tasks/TASKxx/subtasks/TASKxx-yy-*` | 创建子 TASK |
+| 多个已有 TASK 留下竞争路线，需决定下一步 | `tasks/TASK00-project-governance/` | 建 registry、portfolio、dated review 和 decision gate；暂不开新实质 TASK |
 | 局部证据或实验结果 | `tasks/TASKxx/outputs/` | 写 Markdown 证据摘要 |
 | 局部方法或 runbook | `tasks/TASKxx/docs/` | 写 task-local docs |
 | 跨 TASK 的解释、Q&A、决策树 | project `docs/` | 写 project reference |
 | 阶段总结或对外交付 | `final_outputs/` | 写 phase review/final report |
 | 可复用项目组织规则 | `workflow-task-driven-project` | 更新 references/templates |
 | 领域方法规则 | 对应领域 workflow/skill | 更新对应 workflow，不塞进项目管理 workflow |
+
+## Cross-TASK Portfolio Governance
+
+当项目的问题从“下一个已知动作是什么”变成“哪条已有路线更值得下一单位资源”时：
+
+1. 冻结本轮参与比较的 workstream 集合；
+2. 从各 evidence-owning TASK 拉取 accepted facts、威胁、输入边界和最小下一动作；
+3. 使用 standing TASK00 比较 goal value、evidence maturity、feasibility、information gain per cost 和 risk；
+4. 对每条路线标记 `continue / diagnostic / monitor / hold / archive`；
+5. 只有通过 portfolio gate 的路线才取得下一 substantive TASK 编号。
+
+TASK00 是 sibling control plane，不是所有 TASK 的新物理父目录。完整协议读取：
+
+```text
+../../../skills/task-driven-project-manager/references/standing-project-governance.md
+```
 
 ## Adaptor 路由
 

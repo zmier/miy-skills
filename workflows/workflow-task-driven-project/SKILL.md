@@ -1,6 +1,6 @@
 ---
 name: workflow-task-driven-project
-description: 分形任务驱动 workflow。别名 workflow-task-driven。用于把任何阶段目标组织成 task-driven project：机会评估、接单判断、项目执行、阶段复盘、能力反哺。可按场景 adaptor 路由外包项目、学术研究、论文研究、软件工具等，并在需要落地项目骨架时复用 task-driven-project-manager。
+description: 分形任务驱动 workflow。别名 workflow-task-driven。用于把任何阶段目标组织成 task-driven project：机会评估、接单判断、项目执行、跨 TASK workstream portfolio 评审、阶段复盘、能力反哺。可按场景 adaptor 路由外包项目、学术研究、论文研究、软件工具等，并在需要落地项目骨架或 standing TASK00 governance 时复用 task-driven-project-manager。
 ---
 
 # Task-Driven Project Workflow
@@ -43,6 +43,7 @@ task-driven 是分形结构。
 - 需要 TDD、UAT、Makefile、Notebook dashboard、SQLite/request pool 或长跑调度；
 - 需要用 Obsidian 双链把项目复盘链接回过程证据；
 - 项目经验要反哺到可复用 workflow/skill。
+- 已有多个 TASK 和竞争路线，下一步需要先比较证据、成本、风险与信息增量，而不是顺序创建新 TASK。
 
 如果只是创建一个简单目录骨架，直接使用 `task-driven-project-manager` 即可。若需要判断目标阶段、选择项目类型、先做机会评估、保留 gate 或后续能力反哺，应使用本 workflow。
 
@@ -114,10 +115,11 @@ workflow-task-driven-project/
 3. 机会评估阶段优先创建“评估型 task-driven project”，Green 是接单/不接/先 PoC/改范围。
 4. 执行阶段创建“执行型 task-driven project”，Green 是交付物验收。
 5. 复盘阶段创建“复盘型 task-driven project”，Green 是证据地图、经验抽象和反哺候选。
-6. 简单脚手架动作复用 `task-driven-project-manager`。
-7. 领域方法路由到对应领域 workflow，例如 reverse、paper、argument、domain engineering。
-8. 过程证据留在具体 Project/TASK，不复制进 workflow。
-9. 可复用规则抽象进 references、templates 或子 skill。
+6. 当多个已运行 TASK 留下竞争 workstreams 时，先进入 standing governance / portfolio gate；不要用一个新的实质 TASK 伪装元决策。
+7. 简单脚手架动作复用 `task-driven-project-manager`。
+8. 领域方法路由到对应领域 workflow，例如 reverse、paper、argument、domain engineering。
+9. 过程证据留在具体 Project/TASK，不复制进 workflow。
+10. 可复用规则抽象进 references、templates 或子 skill。
 
 详细规则读取 `references/routing.md`。
 
@@ -153,6 +155,14 @@ Frame Goal
 - `tests/unit/e2e/uat`：可验证项目质量；
 - Obsidian `[[...]]` 双链：复盘到证据。
 
+当项目进入跨 TASK 路线竞争时，还应有：
+
+- `tasks/TASK00-project-governance/`：standing governance control plane；
+- `task-registry.md`：全部顶层 TASK 的治理快照；
+- `workstream-portfolio.md`：证据、缺口、状态与下一动作；
+- `decision-log.md`：项目级路线决定；
+- `reviews/YYYY-MM-DD-portfolio-review.md`：append-only 阶段评审。
+
 机会评估型项目至少应有：
 
 - `inputs/`：原始客户材料或研究想法；
@@ -161,6 +171,33 @@ Frame Goal
 - `outputs/追问清单.md`；
 - `outputs/决策建议.md`；
 - `final_outputs/是否进入执行阶段-评估报告.md`。
+
+## Standing Governance / Portfolio Gate
+
+项目已运行多个 TASK 后，若下一步变成“比较哪条路线值得继续”，路由到 standing governance，而不是立即创建下一编号 TASK。
+
+```text
+TASK evidence owners
+-> TASK00 registry + workstream portfolio
+-> compare goal value / evidence maturity / feasibility / information gain / risk
+-> continue / diagnostic / monitor / hold / archive
+-> promote a route into the next substantive TASK, or stop
+```
+
+治理控制面默认位于：
+
+```text
+tasks/TASK00-project-governance/
+```
+
+它在文件系统中是 sibling，在治理语义上是 control plane。它不移动或重写 TASK01+ 的证据。项目根 README 只保留当前精简 roadmap；TASK00 保存详细 portfolio、dated reviews 和 decision history。
+
+脚手架、UAT、状态同步和模板读取：
+
+```text
+task-driven-project-manager/references/standing-project-governance.md
+task-driven-project-manager/assets/standing-task00-governance-template.md
+```
 
 ## Boundary
 
@@ -172,6 +209,7 @@ Frame Goal
 status: structural-green
 source: 由基金经理请回答 Android 业务网络研究项目反哺抽象
 upgrade-source: 由 2026-06-22 飞源信息外包需求评估案例与用户关于“分形 task-driven”的讨论反哺
+governance-upgrade-source: 由 2026-07-13 基金经理研究 TASK00 portfolio review 对话与实战反哺
 forward-test: partial
 ```
 
@@ -186,3 +224,4 @@ forward-test: partial
 - 项目类型 Adaptor：`references/project-type-adaptors.md`
 - 编排 Skill：`skills/task-driven-project-orchestrator/SKILL.md`
 - 外包项目 Adaptor：`skills/outsourcing-project-adaptor/SKILL.md`
+- Standing TASK00 治理协议：`../../skills/task-driven-project-manager/references/standing-project-governance.md`
