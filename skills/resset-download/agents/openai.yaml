@@ -1,0 +1,4 @@
+interface:
+  display_name: "RESSET Download"
+  short_description: "通过 Playwright MCP 自动检索并下载 RESSET 数据"
+  default_prompt: "Use $resset-download to search RESSET through WebVPN, configure filters, handle captcha handoff, and download data from the download center."

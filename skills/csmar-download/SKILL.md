@@ -5,11 +5,44 @@ description: 使用 Playwright MCP 在 CSMAR（国泰安）数据库中搜索、
 
 # CSMAR 数据下载（Playwright MCP）
 
+## 技能工程与来源追溯
+
+本技能的稳定执行规则写在 `SKILL.md`。真实项目反哺、字段验证批次和迁移状态记录在：
+
+```text
+references/source-provenance.md
+```
+
 ## 前置条件
 
 1. 用户已通过 WebVPN（如江南书苑）登录 CSMAR，浏览器中可见 CSMAR 主页面
 2. Playwright MCP 已连接
 3. CSMAR 主页面嵌套在 WebVPN 的 iframe 中，所有页面操作先获取 iframe 上下文
+
+若通过 `playwright-mcp` skill 的 `mcporter` 调用 Playwright MCP，先做运行环境确认：
+
+```bash
+which mcporter && mcporter list
+sed -n '1,160p' ~/.codex/config.toml
+find /Users/narra/Library/Caches/ms-playwright -maxdepth 1 -type d \
+  \( -name 'mcp-chrome*' -o -name 'playwright_chromiumdev_profile-*' \) | sort
+```
+
+当前推荐使用共享 Chrome profile：
+
+```text
+/Users/narra/Library/Caches/ms-playwright/mcp-chrome
+```
+
+如果看到 `mcp-chrome-*` 分叉目录，先确认当前运行的 Chrome 进程是否仍使用固定目录：
+
+```bash
+ps auxww | rg -i 'playwright|mcp-chrome|Google Chrome' | rg -v 'rg -i'
+```
+
+只要当前进程参数含 `--user-data-dir=/Users/narra/Library/Caches/ms-playwright/mcp-chrome` 且带 `--remote-debugging-port=9222`，历史分叉目录可先视为残留，不要误判当前会话跑偏。
+
+注意：`playwright-mcp` 固定 profile 不等于用户日常 Chrome 的现有标签页。若用户要求检查“当前 Chrome TAB”，优先用 Chrome plugin；若 Chrome extension 不可用，可改用 `playwright-mcp` 打开同一 WebVPN URL 并验证固定 profile 中的登录态。
 
 ## 核心操作模式
 
@@ -19,12 +52,86 @@ CSMAR 页面结构：WebVPN 外壳 -> iframe -> CSMAR 实际内容。始终通�
 const frame = page.locator('iframe').contentFrame();
 ```
 
+在 WebVPN 场景下，实际可能是双层 iframe 或 iframe 重载。更稳的做法是从 `page.frames()` 中寻找包含 CSMAR 搜索框、目标表或下载按钮的 frame：
+
+```js
+async function getCsmarFrame(page) {
+  for (const frame of page.frames()) {
+    const hasSearch = await frame
+      .locator('input[placeholder="请输入关键字"]')
+      .count()
+      .catch(() => 0);
+    if (hasSearch > 0) return frame;
+
+    const body = await frame.locator('body').innerText().catch(() => '');
+    if (body.includes('下载数据') || body.includes('四川大学本部')) return frame;
+  }
+  throw new Error('CSMAR frame not found');
+}
+```
+
+`mcporter` 代码执行建议使用 JSON 参数，避免 `function` 或长代码被 shell 解析打断：
+
+```bash
+mcporter call playwright.browser_run_code_unsafe --args '{"code":"async (page) => { return page.url(); }"}'
+```
+
+若使用 `filename` 载入长脚本，Playwright MCP 常见允许目录是：
+
+```text
+/Users/narra/.codex/.playwright-mcp
+/Users/narra/.codex
+```
+
 ## 工作流程
+
+### Phase 0：入口与登录态烟测
+
+打开 WebVPN CSMAR 入口后，先确认是否真的可用，而不是停在过期会话或空 iframe：
+
+```js
+const frame = await getCsmarFrame(page);
+const body = await frame.locator('body').innerText();
+
+const offline = body.includes('账号已下线') || body.includes('重新登录');
+const hasOrg = body.includes('四川大学本部') || body.includes('CSMAR');
+const hasSearch = await frame.locator('input[placeholder="请输入关键字"]').count();
+```
+
+若出现 `账号已下线，请重新登录` 或 `用户未对系统做任何操作超过40分钟，账号已自动登出` 弹窗，优先刷新页面（相当于 `Cmd+R` 或 CDP `Page.reload`）。实测 WebVPN 场景下刷新常能直接恢复 CSMAR 登录态，点击弹窗里的 `重新登录` 反而可能停在首页但未恢复完整操作状态。
+
+```js
+await page.reload({ waitUntil: 'domcontentloaded' }).catch(() => {});
+await page.waitForTimeout(8000);
+const frame = await getCsmarFrame(page);
+```
+
+若刷新后仍未恢复，再尝试点击 `重新登录` 并等待 iframe 重载：
+
+```js
+const relogin = frame.getByText('重新登录');
+if (await relogin.count()) {
+  await relogin.first().click();
+  await page.waitForTimeout(8000);
+}
+```
+
+恢复后重新获取 frame，不要沿用旧 frame 对象：
+
+```js
+const frame = await getCsmarFrame(page);
+```
+
+最低可用性判据：
+
+- 页面正文包含机构名，例如 `四川大学本部1`
+- 能定位到搜索框 `input[placeholder="请输入关键字"]`
+- 轻量检索能返回 `表结果`
 
 ### Phase 1：搜索目标表
 
 ```js
-const frame = page.locator('iframe').contentFrame();
+const frame = await getCsmarFrame(page);
 const searchBox = frame.locator('input[placeholder="请输入关键字"]');
 await searchBox.click();
 await searchBox.fill('关键词');
@@ -64,8 +171,26 @@ const rows = await frame.locator('table tbody tr').allTextContents();
 ### Phase 2：进入目标表
 
 ```js
-await frame.locator('td').filter({ hasText: '目标表名关键词' }).first().click();
+await frame.locator('table tbody tr').first().locator('span.link').nth(1).click();
 await page.waitForTimeout(2000);
+```
+
+进入后先做权限确认：
+
+```js
+const tableBody = await frame.locator('body').innerText();
+if (tableBody.includes('无权限')) throw new Error('CSMAR table has no permission');
+if (!tableBody.includes('已购买')) {
+  console.warn('未看到已购买字样，继续前建议人工核验权限状态');
+}
+```
+
+实测资产负债表入口：
+
+```text
+databaseId=37&tbId=224
+物理表名：FS_Combas
+页面提示：资产负债表 — 资产负债表已购买
 ```
 
 ### Phase 3：配置下载参数
@@ -149,10 +274,73 @@ await download.saveAs('/目标路径/文件名.zip');
 
 关键：下载确认页中的链接文本不是纯表名，而是“表名 + 数字 ID”（例如 `资产负债表141806298`），`filter({ hasText: })` 匹配表名前缀即可。
 
+稳妥定位下载确认页：
+
+```js
+const pages = page.context().pages();
+const downloadPage =
+  pages.find(p => p.url().includes('sdownload')) ||
+  pages[pages.length - 1];
+
+await downloadPage.waitForTimeout(3000);
+const links = await downloadPage.locator('a').allTextContents();
+```
+
+如果 `browser_tabs select` 对当前 `mcporter` 会话返回假性错误，可直接用 Playwright 页面对象切换或关闭：
+
+```js
+const main = page.context().pages()
+  .find(p => p.url().includes('csmar/data/yitlink') && !p.url().includes('sdownload'));
+if (main) await main.bringToFront();
+
+for (const p of page.context().pages().filter(p => p.url().includes('sdownload'))) {
+  await p.close().catch(() => {});
+}
+```
+
 补充：
 - `download.saveAs()` 在包含中文、空格、括号的长路径上偶尔会报 `ENOENT`，但 MCP 通常已经把文件保存到默认目录。
 - 默认下载目录常见为 `/Users/narra/.codex/.playwright-mcp/`，文件名会将括号替换为连字符，例如 `资产负债表211708672-仅供哈佛大学使用-.zip`。
 - 若 `saveAs` 失败，先检查默认下载目录，再 `cp` 到项目目录。
+
+### Phase 5.5：验证批次与字典样本模式
+
+当 CSMAR 不是主数据源，而是用于校验、备源或字段 crosswalk 时，不必一开始追求所有大表全量下载。推荐使用 validation batch：
+
+```text
+small/master table: full download + DES dictionary
+large/panel table: clearly bounded sample window + DES dictionary
+raw zip: source of truth
+parsed CSV/Parquet: derived artifact
+```
+
+执行要点：
+
+- 每个验证批次都保存原始 zip，不只保存解压后的 CSV。
+- 优先保留 CSMAR 自带 `[DES][csv].txt` 或数据字典文件；字段含义不只靠页面截图或人工记忆。
+- 小型 master、manager、subject 表可尝试全字段全量；大型月度、日度、持有人或交易类表先用研究相关窗口做 sample，等变量口径确认后再扩全量。
+- 下载后立即写批次台账，至少记录：
+
+```text
+source_database
+source_table
+download_batch_id
+download_time
+query_range
+code_filter
+field_list
+zip_path
+zip_members
+encoding
+row_count
+download_page_record
+status
+notes
+```
+
+- 做 zip QC 时不要只看文件存在。至少检查 zip member、CSV header、编码、行数、字段数、日期范围和关键字段非空率。
+- 若普通 CSV parser 出现 bad-length rows，先判断是否来自长文本字段中的换行或引号。此类问题不等于下载失败；在 QC 报告里标记为 parser limitation，并把 raw zip 和 DES 字典保留为 source of truth。
+- 验证批次的完成状态通常是 `structural-green / forward-test-pending`：它证明当前项目可用于 cross-check，不等于所有表、所有年份、所有字段都已全量 validated。
 
 ### Phase 6：返回主页面继续下一个表
 
@@ -290,13 +478,33 @@ while (Date.now() - start < 360000) {
 - `FS_Comins`：`B001101000`、`B002000000`、`B001300000`、`B001212000`、`B001302000`
 - `FS_Comscfd`：`C001000000`
 
+### 10. 低风险下载烟测
+
+正式批量下载前，可用资产负债表做小样本烟测，验证“检索 -> 进入表 -> 配置 -> 生成下载页 -> 实际下载”全链路：
+
+- 表：`资产负债表` / `FS_Combas` / `databaseId=37&tbId=224`
+- 时间：`2023-12-31` 至 `2023-12-31`
+- 代码：`常用代码`
+- 字段：默认已选 4 个字段即可，不必全选
+- 格式：`CSV格式（*.csv）`
+
+成功标志：
+
+- 下载确认页 URL 包含 `sdownload.html`
+- 页面显示 `下载表名 资产负债表`
+- 页面显示类似 `资产负债表155843919.zip`
+- 链接文本为 `资产负债表 + 数字 ID`
+- zip 内含 `FS_Combas.csv` 与 `FS_Combas[DES][csv].txt`
+
+实测样例：`2023-12-31` 单期、常用代码、默认 4 字段生成约 276KB zip，共约 10640 条记录。不同日期和账号权限下编号会变化，以页面显示为准。
+
 ## 批量下载模板
 
 将 Phase 1-6 封装为可复用函数：
 
 ```js
 async (page) => {
-  const frame = page.locator('iframe').contentFrame();
+  const frame = await getCsmarFrame(page);
 
   // 搜索
   const searchBox = frame.locator('input[placeholder="请输入关键字"]');
