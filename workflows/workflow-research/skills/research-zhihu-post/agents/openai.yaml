@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Zhihu Post"
+  short_description: "把研究进展写成知乎同行稿并完成陌生读者视角的证据与表述审计"
+  default_prompt: "Use $research-zhihu-post to turn the current research progress into an outsider-readable Zhihu peer discussion draft and audit hidden assumptions."

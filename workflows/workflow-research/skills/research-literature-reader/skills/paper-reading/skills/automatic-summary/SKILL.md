@@ -26,6 +26,7 @@ description: paper-reading 的自动文献摘要和自动提取模式。用于�
 
 ```text
 orientation summary；
+claim-warrant map；
 TASKxx-design-extraction.md；
 route-map.md；
 writing-patterns.md；
@@ -34,6 +35,25 @@ reading-log.md。
 ```
 
 若用户没有指定，优先输出结构化摘要，不默认写满所有资产。
+
+## Claim-Warrant Map
+
+自动摘要不能只按文献综述、理论、变量、识别、结果、稳健性做模块摘要。至少应保留一版简短的 `claim-warrant map`：
+
+```text
+core claim:
+logical form:
+proposition branches:
+for each branch:
+  abstract object:
+  observable proxy:
+  warrant:
+  evidence:
+  competing explanations:
+  remaining uncertainty:
+```
+
+若核心发现是复合命题，先拆命题支；若某个命题支是 `Bx -> By`，分别处理 `Bx` 和 `By` 的 proxy / warrant / evidence。不得把整篇论文偷换成单组 X/Y。
 
 ## 必填说明
 

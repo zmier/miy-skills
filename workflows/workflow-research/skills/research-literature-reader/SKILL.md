@@ -25,6 +25,23 @@ description: workflow-research 的研究项目文献阅读编排子 Skill。用�
 PDF 还原、论文学习、论证审计和 task 管理由相邻 Skill 承接。
 ```
 
+阅读主轴：
+
+```text
+作者断言
+-> 命题拆解
+-> 凭什么链
+-> 项目迁移
+```
+
+不要把文献阅读降成模块摘要。文献综述、理论构建、变量构造、识别设计、替代解释、稳健性和项目迁移等模块，本质上都应服务于回答：
+
+```text
+作者凭什么让我们相信核心断言？
+```
+
+如果核心发现是复合命题，必须先拆命题支，再分别寻找每个命题支所需的 proxy、warrant、evidence 和排除性检验。变量是证明 claim 的工具，不是独立于 claim 的填空栏目。
+
 编排边界：
 
 ```text
@@ -35,6 +52,38 @@ task-specific reading / route mapping / writing patterns 由本 Skill 收口。
 
 因此，调用 PDF restoration 后必须做资产整理，不得让 PDF restoration 的 TASK 结构直接替代文献阅读资产结构。
 
+## 项目语境与回挂边界
+
+本 Skill 只在 project / task / route / node 语境中负责“回挂”。如果用户只是单独学习一篇论文、做个人摘要或通用模板拆解，不应为了形式完整而伪造 task、route 或 node；此时应转交 `paper-reading` 或 `workflow-paper` 的学论文路线，保留论文自身阅读产物即可。
+
+项目型文献阅读的判断标准：
+
+```text
+存在当前 research project；
+存在当前 task / route / node；
+用户明确要求文献服务实验设计、变量构造、机制、识别、数据需求或写作迁移；
+阅读产物需要进入项目复盘、路线取舍或后续 paper 化。
+```
+
+若满足项目语境，本 Skill 负责决定并执行阅读产出回挂：
+
+```text
+paper-reading 管“怎么读”和“读出了什么”；
+research-literature-reader 管“这些产出如何进入项目资产图”。
+```
+
+项目型阅读完成后，应判断是否需要更新：
+
+```text
+当前 TASK 的 reading contribution ledger；
+相关 route / node 的 linked papers、evidence、design options、data needs 或 threats；
+文献文件夹的 README / reading-log；
+项目级 logs/log.md；
+workflow-research/logs 中的可迁移流程洞见。
+```
+
+没有 project / task / route / node 语境时，不强制回挂，只保留用户要求的 paper-level 产物。
+
 ## 内部结构
 
 本 Skill 是复合 Skill。项目级父入口负责文献资产、task / route / provenance；单篇或一组文献怎么读，先路由到二级父 Skill：
@@ -43,14 +92,53 @@ task-specific reading / route mapping / writing patterns 由本 Skill 收口。
 skills/paper-reading/SKILL.md
 ```
 
-`paper-reading` 再判断执行模式：
+`paper-reading` 再编排单篇论文阅读管线：
 
 ```text
-collaborative-reading：对话优先，先给用户 Paper Orientation Card，再等待追问或确认。
-automatic-summary：文件优先，Agent 自动整理摘要 / extraction / route mapping。
+paper-extract：
+  结构化自动抽取层；
+  先生成 automatic-extraction.md。
+
+paper-co-read：
+  协同共读层；
+  读取 automatic-extraction.md，生成 Paper Orientation Card 和 discussion-outline.md。
+
+paper-finalize：
+  核验定稿层；
+  回到 PDF / restored manuscript / tables / figures / source anchors；
+  生成 final-literature-note.md / verified-claims.md / source-check-log.md。
+
+automatic file output：
+  文件资产化输出；
+  基于 automatic-extraction.md 生成 task-specific extraction / route map / writing patterns。
 ```
 
-不要把 `collaborative-reading` 和 `automatic-summary` 直接当作项目级平行能力；它们是 `paper-reading` 的两个模式分支。
+不要把 `collaborative-reading` 和 `automatic-summary` 直接当作项目级平行能力。新的默认关系是：
+
+```text
+PDF / Markdown substrate
+  -> paper-extract
+     automatic-extraction.md
+  -> paper-co-read / paper-finalize / automatic file output
+     discussion-outline.md / final-literature-note.md / task-specific extraction / route map / writing patterns
+```
+
+验证期暂保留旧 `collaborative-reading` 和 `automatic-summary` Skill，不删除；新共同读任务优先走 `paper-extract -> paper-co-read`，最终可引用任务走 `paper-extract -> paper-finalize`。
+
+三条正式路线：
+
+```text
+默认推荐：
+  paper-extract -> paper-co-read -> paper-finalize
+
+用户明确要求先核验：
+  paper-extract -> paper-finalize -> paper-co-read
+
+批量 / 正式文献库：
+  paper-extract -> paper-finalize
+```
+
+`paper-finalize` 是核验定稿层，不是 first-pass 抽取层。若没有 `automatic-extraction.md`，必须先运行 `paper-extract`。若没有 `discussion-outline.md` 但用户要求先核验，必须标记为 `cold-start finalization`。
 
 ## 底稿状态词
 
@@ -79,39 +167,87 @@ restored manuscript = 完成逐章还原和必要视觉 QC 的可信稿。
 
 若用户只给出 PDF 目录，先列出论文清单，并判断哪些文献和当前 task / route 关系最直接。
 
-## 阅读模式路由
+## 阅读管线路由
 
-当用户要“读一篇 / 一组文献”时，先路由到 `skills/paper-reading/SKILL.md` 判断模式。
+当用户要“读一篇 / 一组文献”时，先路由到 `skills/paper-reading/SKILL.md` 判断阅读管线。
 
-模式判断：
+管线判断：
 
 ```text
 用户还没读、要求先讲解、边读边讨论、需要继续追问
-  -> collaborative-reading
+  -> paper-extract -> paper-co-read
+
+用户明确要求最终文献笔记、可引用结论、source-check、核表格、核公式
+  -> paper-extract -> paper-finalize
+
+用户明确要求先核验再共同读
+  -> paper-extract -> paper-finalize -> paper-co-read
 
 用户明确要求自动总结、批量整理、直接生成文件产物
-  -> automatic-summary
+  -> paper-extract -> automatic file output 或 paper-finalize
+
+用户明确要求批量 / 正式文献库 / 可引用文献条目
+  -> paper-extract -> paper-finalize
 
 用户要从文献服务某个 task / route
-  -> 先 paper-reading，再按确认后的理解回到本 Skill 做资产沉淀
+  -> 先 paper-extract，再按用户意图进入 co-read、finalize 或资产沉淀
 ```
 
-协同阅读模式的第一轮必须在对话窗口返回 Paper Orientation Card：
+协同共读模式的第一轮必须基于 `automatic-extraction.md` 在对话窗口返回 Paper Orientation Card：
 
 ```text
-一句话核心发现；
-主 X；
-X 的操作化 / 代理变量；
-主 Y；
-Y 的操作化 / 代理变量；
-主机制；
+一句话核心发现：理论纯净版；
+一句话核心发现：读者导览版；
+形式逻辑结构初判；
+命题支初判；
+每个命题支的待证对象；
+每个命题支中的可观察对象 / proxy；
+必要时按命题支标注 X/Y 关系；
+主机制 / warrant；
 文献 / 学术基础和对话；
 research gap；
 对当前项目的初步可迁移性；
 建议下一步深读位置。
 ```
 
-在 collaborative-reading 模式下，第一轮应同时创建或更新 `discussion-outline.md`，保存 Orientation Card Snapshot、初始 Agenda、首轮 Discussion Ledger 和 pending 项。未经用户确认，不要直接写满 `TASKxx-design-extraction.md`、`route-map.md` 或 `writing-patterns.md`。
+不要预设所有论文都有单一 `主 X / 主 Y`。X/Y 只有在对理解作者论证有帮助时才出现，并且必须说明它属于哪个命题支。
+
+在 `paper-co-read` 模式下，第一轮应同时创建或更新 `discussion-outline.md`，保存 Orientation Card Snapshot、初始 Agenda、首轮 Discussion Ledger 和 pending 项。未经用户确认，不要直接写满 `TASKxx-design-extraction.md`、`route-map.md` 或 `writing-patterns.md`。
+
+如果没有可用 `automatic-extraction.md`，必须先运行 `paper-extract` 生成最小结构化抽取底稿，再进入共同读。
+
+## 阅读产出回挂
+
+在项目语境中，文献阅读结束不等于“文件已经生成”。还需要把阅读产出登记回项目上下文，使后续可以回答：
+
+```text
+为了哪个 task 读了这篇文献；
+读出了哪些产物；
+这些产物贡献到哪些 route / node；
+它对 claim、proxy、data need、design option、evidence 或 threat 的影响是什么；
+哪些内容只是阅读草稿，哪些已经 source-checked；
+哪些判断仍需要用户讨论或后续核验。
+```
+
+推荐在当前 task 的说明文件或专门 ledger 中维护：
+
+```markdown
+## 文献阅读产出回挂
+
+| Ref | 文献 | 阅读产出链接 | 贡献到哪些 Node / Route | 对本 Task 的作用 | 状态 |
+|---|---|---|---|---|---|
+```
+
+回挂粒度：
+
+```text
+task ledger：记录本 task 为什么读、读出了什么、链接在哪里；
+node / route：记录这篇文献怎样改变 claim / proxy / design / threat；
+paper folder：记录该文献自身的 extraction / co-read / finalize / logs；
+project log：只记录跨 node 的路线判断、重大取舍或 workflow 反哺。
+```
+
+不要把完整读书笔记塞回 task 文件。task 文件只保留索引、贡献说明和状态，详细内容留在单篇文献文件夹。
 
 ## 文献资产结构
 
@@ -131,6 +267,10 @@ research gap；
 │   ├── tables-restored/
 │   └── figures-restored/
 ├── 2-task-readings/
+│   ├── TASK01-automatic-extraction.md
+│   ├── TASK01-discussion-outline.md
+│   ├── TASK01-final-literature-note.md
+│   ├── TASK01-verified-claims.md
 │   └── TASK01-design-extraction.md
 ├── 3-route-mapping/
 │   └── route-map.md
@@ -144,6 +284,7 @@ research gap；
     ├── restoration-qc.md
     ├── table-visual-qc.md
     ├── figure-visual-qc.md
+    ├── TASK01-source-check-log.md
     └── reading-log.md
 ```
 
@@ -152,6 +293,9 @@ research gap；
 ```text
 raw source；
 restored reading substrate；
+automatic extraction；
+discussion outline；
+final literature note / verified claims / source-check log；
 task-specific extraction；
 route / claim mapping；
 writing-pattern extraction；
@@ -336,7 +480,7 @@ main Agent / research-literature-reader：
 
 ## 执行协议
 
-1. 明确本轮阅读目的和阅读模式：
+1. 明确本轮阅读目的和阅读管线：
    - 设计实验；
    - 找变量 / 数据；
    - 学识别策略；
@@ -344,15 +488,19 @@ main Agent / research-literature-reader：
    - 找 robustness；
    - 学写作范式；
    - 判断 candidate route 是否值得推进。
-2. 若目标是读单篇或一组文献，先调用 `skills/paper-reading/SKILL.md`，判断 `collaborative-reading` 或 `automatic-summary`。
-3. 在 collaborative-reading 模式下，先在对话窗口返回 Paper Orientation Card；同一轮在文件侧创建或更新 `discussion-outline.md` 作为协同阅读工作台；等用户追问、确认或要求保存后，再继续 task-specific extraction、route map 或 writing patterns 等资产沉淀。
-4. 读取当前 project / task / route 材料，写出本轮文献阅读问题清单。
-5. 定位 PDF 与已有 Markdown。若没有可信 Markdown，转入 `scholar-pdf-markdown-restoration`；执行前读取该 Skill，并按其 routing / table-leak / QC 规则产出 restored Markdown、primary reading substrate 或明确降级状态。
-6. 若 PDF restoration 较重，判断是否开 subAgent。只有工具型、边界清楚、可产出 compact QC 的任务才交给 subAgent；研究阅读判断不得完全外包。
-7. 建立或补全文献文件夹。不要移动用户已有文件，除非用户明确要求；可用索引或相对软链先把原始 PDF 纳入资产图。
-8. 执行 Markdown Substrate Acceptance Gate。若底稿是 `extraction candidate`、`degraded reading draft` 或 `table-leak high risk`，不得作为主阅读底稿进入 design extraction。
-9. 将 restoration 产物整理回文献资产结构：`tasks/` 保存过程，`1-md/` 保存阅读底稿入口，`logs/` 保存 QC / provenance；若使用软链，需确认软链可解析，并在 README 中说明入口状态。验收失败稿放入 `1-md/candidates/` 或显著标为 `not primary substrate`。
-10. 做 task-specific extraction。面向实验设计时，至少提取：
+2. 若目标是读单篇或一组文献，先调用 `skills/paper-reading/SKILL.md`，编排 `paper-extract -> paper-co-read` 或 `paper-extract -> automatic file output`。
+3. 若目标是读单篇或一组文献，先确认或生成 `automatic-extraction.md`；这是共同读和文件资产化输出的上游结构化底稿。
+4. 在 `paper-co-read` 模式下，基于 `automatic-extraction.md` 先在对话窗口返回 Paper Orientation Card；同一轮在文件侧创建或更新 `discussion-outline.md` 作为协同阅读工作台；等用户追问、确认或要求保存后，再继续 task-specific extraction、route map 或 writing patterns 等资产沉淀。
+5. 读取当前 project / task / route 材料，写出本轮文献阅读问题清单。
+6. 定位 PDF 与已有 Markdown。若没有可信 Markdown，转入 `scholar-pdf-markdown-restoration`；执行前读取该 Skill，并按其 routing / table-leak / QC 规则产出 restored Markdown、primary reading substrate 或明确降级状态。
+7. 若 PDF restoration 较重，判断是否开 subAgent。只有工具型、边界清楚、可产出 compact QC 的任务才交给 subAgent；研究阅读判断不得完全外包。
+8. 建立或补全文献文件夹。不要移动用户已有文件，除非用户明确要求；可用索引或相对软链先把原始 PDF 纳入资产图。
+9. 执行 Markdown Substrate Acceptance Gate。若底稿是 `extraction candidate`、`degraded reading draft` 或 `table-leak high risk`，不得作为主阅读底稿进入 design extraction。
+10. 将 restoration 产物整理回文献资产结构：`tasks/` 保存过程，`1-md/` 保存阅读底稿入口，`logs/` 保存 QC / provenance；若使用软链，需确认软链可解析，并在 README 中说明入口状态。验收失败稿放入 `1-md/candidates/` 或显著标为 `not primary substrate`。
+11. 做 task-specific extraction。面向实验设计时，至少提取：
+   - one-sentence core finding / 作者断言；
+   - claim decomposition / 命题拆解；
+   - claim-warrant map / 凭什么链；
    - research question；
    - empirical setting / data；
    - treatment / exposure / event；
@@ -367,14 +515,15 @@ main Agent / research-literature-reader：
    - what does not transfer；
    - data needed beyond current project data；
    - threats and unresolved questions。
-11. 做 route mapping：
+12. 做 route mapping：
    - 这篇文献支持哪条 candidate route；
    - 它提供的是主干设计、机制、变量、robustness、写作范式还是反例；
    - 它要求补充哪些数据；
    - 它暴露哪些识别威胁。
-12. 若本轮目标包含写作，单独写 `4-writing-patterns/writing-patterns.md`。不要把写作范式混进实验设计提取里。
-13. 更新 task log，记录本轮读文献的目的、模式、输入、产物、未解决风险和下一步。
-14. 将可能可迁移的流程洞见先写入 `workflow-research/logs` 或项目 log，不直接提升为稳定 reference。
+13. 若本轮目标包含写作，单独写 `4-writing-patterns/writing-patterns.md`。不要把写作范式混进实验设计提取里。
+14. 若存在 project / task / route / node 语境，更新当前 task 的 reading contribution ledger，并把关键产出回挂到相关 route / node。
+15. 更新 task log，记录本轮读文献的目的、模式、输入、产物、回挂对象、未解决风险和下一步。
+16. 将可能可迁移的流程洞见先写入 `workflow-research/logs` 或项目 log，不直接提升为稳定 reference。
 
 ## TASK01 设计提取模板
 
@@ -393,6 +542,18 @@ main Agent / research-literature-reader：
 - Candidate route:
 
 ## Why This Paper Matters For This Task
+
+## Claim-Warrant Map
+
+- Core claim:
+- Logical form:
+- Proposition branches:
+- For each branch:
+  - abstract object:
+  - observable proxy:
+  - warrant:
+  - evidence:
+  - competing explanations:
 
 ## Core Design
 
@@ -435,6 +596,7 @@ main Agent / research-literature-reader：
 - 单篇文献文件夹的 `0-raw/`、`1-md/` 和 `logs/` 入口；
 - 单篇文献文件夹中的 task-specific extraction；
 - route mapping 或 task 输出文件；
+- 若有 project / task / route / node 语境，更新 task reading contribution ledger 和相关 route / node；
 - task log；
 - 若有 PDF 转 Markdown，更新 restoration QC；
 - 若有 Docling / 多抽取器 forward-test，更新 comparison report 和 metadata，并在阅读入口标明不是 full restoration；
@@ -445,7 +607,8 @@ main Agent / research-literature-reader：
 ## 完成标准
 
 - 本轮阅读问题来自当前 task / route，而不是无目标摘抄。
-- 已判断阅读模式；协同阅读时先返回 Paper Orientation Card，自动摘要时标明文件产物范围。
+- 已判断是否存在 project / task / route / node 语境；没有项目语境时，不伪造回挂对象。
+- 已判断阅读管线；共同读时先有 automatic-extraction.md，再返回 Paper Orientation Card；自动文件输出时标明文件产物范围。
 - 原始文献、Markdown 底稿、阅读产物和日志可追溯。
 - 稳定入口和过程产物已区分；若用软链组织，链接可解析，且不会把 candidate extraction 误标为 restored manuscript。
 - Markdown substrate 已通过接收验收；若未通过，已降级为 candidate / degraded，并停止依赖该稿做实验设计提取。
@@ -454,14 +617,17 @@ main Agent / research-literature-reader：
 - 明确说明哪些设计可迁移到当前项目，哪些不可迁移。
 - 明确列出当前主数据已经满足什么、还缺什么数据。
 - 明确记录识别威胁和下一步实验设计问题。
+- 若存在 project / task / route / node 语境，已把阅读产物链接回 task ledger，并更新相关 route / node 的证据、设计或风险状态。
 - 如果 Markdown 底稿未完成可靠还原，最终产物必须标为 reading draft / degraded，不得声称已完成精读。
 - 对 empirical / table-heavy paper，若存在 `table-leak high risk`，不得完成 design extraction，除非本轮只提取非表格的研究问题和下一步修复任务。
 
 ## 禁止事项
 
 - 不把 PDF 转 Markdown 当成文献阅读完成。
-- 不在用户要求协同阅读时直接进入自动摘要或完整文件沉淀。
+- 不在用户要求共同读时跳过 automatic-extraction.md。
+- 不在用户要求共同读时直接进入自动摘要或完整文件沉淀。
 - 不把 Paper Orientation Card 当成最终精读结论。
+- 不把 discussion-outline.md 当成 automatic-extraction.md。
 - 不把 `scholar-pdf-markdown-restoration` 的 TASK 结构直接当成文献资产结构完成。
 - 不复制或移动大文件制造多套不一致版本；优先用相对软链 / 索引建立入口，除非外部交付或跨机器归档需要真实副本。
 - 不把 `manuscript_paragraphs.md` 自动当作主阅读底稿；没有 routing QC / table-leak scan / restoration status 的稿件必须先验收。
@@ -470,5 +636,7 @@ main Agent / research-literature-reader：
 - 不把 subAgent 的 restoration summary 当成研究判断或 route mapping。
 - 不把单篇文献读成泛泛摘要，而忽略当前 task / route。
 - 不把 task-specific 阅读笔记当成永久稳定的 project-level 结论。
+- 不在没有项目语境时强制创建 task / route / node 回挂。
+- 不把完整读书笔记塞回 task ledger；task ledger 只保存索引、贡献说明和状态。
 - 不在没有数据和识别检查时宣称某条 route 已经成立。
 - 不把写作范式、实验设计、变量构造和引用信息混在同一个不可复盘文件里。

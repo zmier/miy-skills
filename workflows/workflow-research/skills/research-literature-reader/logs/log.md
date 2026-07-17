@@ -219,3 +219,128 @@ Good:
 ### Lesson
 
 协同阅读需要先把 claim 和 evidence 分层。A01 只负责最小 claim；A04/A07 等后续 Agenda 再讨论作者如何论证、证据强度和替代解释。
+
+## 2026-07-06 ReAct: 从八股模块到“凭什么链”
+
+### Trigger
+
+在 `Does Media Coverage of Stocks Affect Mutual Funds' Trading and Performance?` 的协同阅读中，用户指出：文献综述、理论构建、变量构造、实验设计、替代解释、稳健性和项目迁移这些模块，本质上都应服务于回答“凭什么”。如果只是按论文八股模块罗列，得到的是形式摘要，不是实质论证线。
+
+### Insight
+
+论文阅读主线应从：
+
+```text
+文献综述 -> 理论 -> 数据 -> 变量 -> 识别 -> 结果 -> 稳健性
+```
+
+升级为：
+
+```text
+作者断言 C
+-> 凭什么 C 值得问
+-> 凭什么 X 会影响 Y
+-> 凭什么 proxy 能代表理论对象
+-> 凭什么实验 / 识别能支持结论
+-> 凭什么不是竞争性解释
+-> 凭什么结果稳健可信
+-> 凭什么能迁移到当前项目
+```
+
+### Status
+
+详见独立 log：
+
+```text
+logs/2026-07-06-从八股模块到凭什么链.md
+```
+
+### Lesson
+
+八股模块是论文呈现的形式秩序；“凭什么链”是论文成立的实质论证秩序。`research-literature-reader` 后续应考虑把 `claim-warrant map` 提升为协同阅读和自动摘要的共同产物。
+
+### Patch
+
+已根据 `Does Media Coverage...` 的复合命题 case 修补 `collaborative-reading`：
+
+```text
+A02: Main X and proxies -> Claim decomposition
+A03: Main Y and proxies -> Operationalization and proxy bridge
+```
+
+这样后续 Agenda 会先拆 A01 的命题结构，再为每个命题支寻找 X/Y/proxy/warrant/evidence，避免把复合命题偷换成单组 X/Y。
+
+### UAT Patch
+
+SubAgent 只读 UAT 结论为 PASS；随后根据其提示补了轻微歧义：
+
+```text
+research-literature-reader/SKILL.md
+automatic-summary/SKILL.md
+collaborative-reading/SKILL.md
+collaborative-reading/templates/discussion-outline-template.md
+```
+
+核心补丁：父层和自动摘要也必须输出或承认 `claim-warrant map`；Orientation Card 中的 Main X / Main Y 只作为 first-pass orientation，不能替代 A02/A03 的命题拆解和 proxy bridge。
+
+### UAT Anti-Cheating Follow-up
+
+用户指出：如果 UAT prompt 直接泄露 `A01 / P1 / P2 / Bx / By / proxy bridge` 等预期结构，就不是干净验收，而是在让 subAgent 复述标准答案。
+
+已新增：
+
+```text
+skills/miy-uat/SKILL.md
+```
+
+用于约束 black-box / gray-box / white-box UAT，核心原则是：不要把预期答案、已知 bug、修复方案和关键输出结构泄露给验证者。
+
+干净 UAT 进一步暴露出 `collaborative-reading` 的残余问题：Agenda 已能自然走向命题拆解和 proxy bridge，但 A01 仍可能把经验 proxy 句子当成理论核心发现。因此补充规则：A01 优先写理论对象 / 抽象构念；proxy 只在 A03 解释其如何代理理论对象，除非论文的核心 claim 本身就是 measurement / proxy claim。
+
+## 2026-07-08 ReAct: 项目型文献阅读的回挂边界
+
+### Trigger
+
+在 `CASE-260521-基金经理研究` 中，用户要求把已读文献产出链接回 `TASK01-说明.md`。随后进一步指出：`paper-reading` 可以单独使用，不能要求所有论文阅读都必须回挂到 task / node；回挂规则应由上层 Skill 在项目语境中约定。
+
+### Observation
+
+原先容易把三件事混在一起：
+
+```text
+paper-reading：一篇论文怎么读；
+research-literature-reader：项目中为什么读、读完如何沉淀；
+workflow-paper：这件事属于学论文、写论文、审稿、返修还是格式交付。
+```
+
+如果在 `paper-reading` 层强制“不得让阅读资产成为孤岛”，会误伤独立读论文场景。用户只是想读懂一篇论文或生成个人笔记时，不应该伪造 task / route / node。
+
+### Rule Upgrade
+
+边界改为：
+
+```text
+paper-reading：
+  管阅读管线和 reading output handoff；
+  可以独立使用；
+  不强制项目回挂。
+
+research-literature-reader：
+  管 project / task / route / node 语境下的文献资产沉淀；
+  若存在项目语境，负责把阅读产出回挂到 task ledger、node、paper folder 和 project log；
+  若无项目语境，不伪造回挂对象。
+
+workflow-paper：
+  只判断是独立学论文还是项目内学论文；
+  项目内学论文交给 research-literature-reader。
+```
+
+### Lesson
+
+更准确的规则不是“不得让阅读资产成为孤岛”，而是：
+
+```text
+项目型文献阅读不得让阅读资产与项目上下文断链。
+```
+
+独立学论文可以只保留 paper-level 产物；项目型学论文必须说明这些产物如何服务当前 task / route / node。

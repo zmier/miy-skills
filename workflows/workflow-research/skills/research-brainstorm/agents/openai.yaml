@@ -1,0 +1,7 @@
+interface:
+  display_name: "Research Brainstorm"
+  short_description: "Seminar-style research brainstorming"
+  default_prompt: "Use $research-brainstorm to run a seminar-style multi-perspective brainstorming round for this research puzzle."
+
+policy:
+  allow_implicit_invocation: true

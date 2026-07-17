@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Roadmap"
+  short_description: "Make clickable research-route maps"
+  default_prompt: "Use $research-roadmap to turn this project into a clickable research roadmap."
