@@ -34,6 +34,13 @@ academic-argument-spine.md
 
 ```text
 one-sentence finding
+logical_form
+full_logical_restoration
+readable_compressed_version
+component_propositions
+research_function_labels
+abstract_anchor
+introduction_or_conclusion_calibration
 X / M / Y / Y2
 X1: 问题有意义
 X2: 作者证明了具体核心发现
@@ -48,6 +55,22 @@ uncertainties / QC
 - 不填表格系数、文献证据或图表证据；
 - 不做审稿攻击；
 - X2 不得写成“作者做出来了”“核心发现成立”“作者证明了核心发现”等空泛占位，必须写成具体 X -> Y / X -> M -> Y 发现。
+- 一句话核心发现必须能表述为形式逻辑视角下的简单命题或复合命题；`X/M/Y/Y2` 是辅助定位，不是替代品。
+- 优先从 abstract 提炼一句话发现，再用 introduction、theory / hypotheses、results 和 conclusion 校准。
+
+可用输出结构：
+
+```text
+one-sentence finding:
+  full_logical_restoration:
+  readable_compressed_version:
+  logical_form: categorical / conditional / conjunction / disjunction / mixed
+  component_propositions:
+  research_function_labels:
+  abstract_anchor:
+  calibration_sources:
+  qc_flags:
+```
 
 合格：
 

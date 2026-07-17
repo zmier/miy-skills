@@ -48,6 +48,7 @@ scope:
 
 - 直接削弱根结论、总结论或 `Y` 的断点；
 - 削弱关键中层节点、`X2` 或主要分论点的断点；
+- 能有效削弱目标命题形态的断点，而不是只制造相关疑问；
 - 能用原文、表格、题干或 evidence ledger 清楚定位的断点；
 - 能明确说明“作者用 A 推 B，但 A 不足以推出 B”的断点；
 - 与当前任务指令匹配的断点。
@@ -58,6 +59,7 @@ scope:
 - 需要大量外部知识才能说明的问题；
 - 与已选问题高度重复的问题；
 - 只有术语标签、无法说清推理断裂的问题；
+- 对假言命题 `A -> B` 只指出 `非A`，却没有说明这如何构成前件未确立、范围错配或 `A 且 非B` 的问题；
 - 证据缺口尚未 QC，且影响范围不明的问题。
 
 ## 输出原则
@@ -66,6 +68,9 @@ scope:
 
 ```text
 target_arrow
+target_proposition_form
+valid_counterexample_shape
+does_issue_match_counterexample_shape
 weakened_node
 impact_on_root
 why_selected

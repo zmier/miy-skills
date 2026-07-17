@@ -58,7 +58,8 @@ workflow-argument-validity
    - 显性箭头；
    - 隐含前提；
    - 总论点、分论点和总结论之间的关系。
-   - 学术论文场景下，必须把 `X2` 还原为具体核心发现句：哪个 X 通过什么机制 M 影响哪个 Y，而不是只写“作者做出来了”。
+   - 关键 claim 必须能表述为形式逻辑视角下的简单命题或复合命题。
+   - 学术论文场景下，必须把 `X2` 还原为具体核心发现句：先从摘要提炼命题形态，再校准哪个 X 通过什么机制 M 影响哪个 Y，而不是只写“作者做出来了”。
 3. 生成节点台账和 Mermaid：
    - 默认使用 `flowchart BT` 表达下层节点 supports 上层节点；
    - 每个节点应有证据位置或待补证据状态；
@@ -71,6 +72,8 @@ workflow-argument-validity
    - 是否出现概念漂移、范围扩大、层级错配或衡量标准错配。
 5. 检查支撑箭头：
    - `A -> B` 是否成立；
+   - B 是直言、假言、联言、选言还是混合命题；
+   - 反驳形态是否真的击中目标命题，例如反驳 `A -> B` 需要 `A 且 非B`，单纯 `非A` 不构成反例；
    - `B -> C` 是否成立；
    - 多个论据是否真的可以合推结论；
    - 一个论据是否被分推到过多结论。
@@ -218,6 +221,7 @@ workflow-argument-validity
 | Reference | 何时读取 |
 |---|---|
 | `references/text-type-routing.md` | 需要判断论效题、审稿、写作自审或普通论证路线时 |
+| `references/proposition-form-core.md` | 需要还原关键 claim、一句话核心发现、X2、目标命题形态或反驳形态时 |
 | `references/argument-tree-core.md` | 需要恢复论证树、定义节点/箭头/隐含前提时 |
 | `skills/argument-arrow-audit/references/arrow-audit-core.md` | 执行验箭头时读取；这是整合断点分类、逻辑谬误、概念关系、数字统计、外推、机制预测和 GRE 指令输出的可执行断点库 |
 | `skills/argument-arrow-repair-mapping/assets/arrow-repair-map-template.md` | 已有断点，需要输出可执行修复路线、知识来源审计、临时 repair menu 或降调方案时使用 |

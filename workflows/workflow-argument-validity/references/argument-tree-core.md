@@ -22,6 +22,10 @@ evidence / premise
 
 ## 节点类型
 
+关键 claim 节点必须先写成可判真假的命题。尤其是 `root claim`、`major support`、`subclaim` 和学术论文中的 `X2`，不得只写成“问题有意义”“核心发现成立”“机制检验”“贡献成立”这类标签。
+
+命题化规则见 `proposition-form-core.md`。形式逻辑是主骨架；论文写作或研究设计标签只是辅助说明。
+
 | 节点 | 含义 | 示例 |
 |---|---|---|
 | root claim | 最终要证明的结论 | 论文值得发表；政策应推行；材料结论可信 |
@@ -76,6 +80,20 @@ theory + measurement + data + identification + results + robustness/mechanism ->
 是否进一步上升到 Y2 / 政策启示 / 贡献声称
 ```
 
+更严格地说，`X2` 必须能还原成形式逻辑视角下的简单命题或复合命题，例如直言、假言、联言或选言命题。`X/M/Y/Y2` 只帮助定位命题成分，不能替代命题本身。
+
+建议同时保留：
+
+```text
+logical_form
+full_logical_restoration
+readable_compressed_version
+component_propositions
+research_function_label
+```
+
+其中 `full_logical_restoration` 用于保证命题结构完整，`readable_compressed_version` 用于保留锋利的一句话表达。
+
 学术论文论证树还应继续展开到底层 evidence nodes：
 
 ```text
@@ -103,6 +121,7 @@ E-* 具体证据
 - 根结论明确；
 - 至少一层支撑节点明确；
 - 每个关键节点有原文或证据来源；
+- 关键 claim 节点能表述为形式逻辑视角下的简单命题或复合命题；
 - 学术论文场景下，X2 必须写成具体核心发现句，而不是抽象标签；
 - 学术论文场景下，关键支撑应有 evidence ledger，追溯到表格、系数、显著性、变量定义、模型设定、文献引用或原文段落；
 - 学术论文场景下，关键 evidence node 应画回 Mermaid，形成可见的证据叶子；

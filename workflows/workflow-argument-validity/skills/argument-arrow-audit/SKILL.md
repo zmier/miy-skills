@@ -54,6 +54,14 @@ argument-arrow-audit
 
 ## 通用验箭头协议
 
+0. 检查命题形态：
+
+   ```text
+   from_node / to_node 若是 claim，必须能表述为可判真假的命题；
+   若只是标签，标记 needs-claim-rewrite，回到 argument-tree-extraction；
+   对 to_node 记录 target_proposition_form 和 valid_counterexample_shape。
+   ```
+
 1. 固定箭头：
 
    ```text
@@ -103,7 +111,7 @@ argument-arrow-audit
 
 ```text
 arrow audit table:
-  arrow_id | from_node | to_node | status | break_type | fallacy_label | hidden_premise | why_it_breaks | impact_on_root | fix_or_downgrade
+  arrow_id | from_node | to_node | target_proposition_form | valid_counterexample_shape | does_break_match_counterexample_shape | status | break_type | fallacy_label | hidden_premise | why_it_breaks | impact_on_root | fix_or_downgrade
 
 task_instruction:
   assumption / question / evidence / alternative / paragraph / review concern
@@ -118,6 +126,7 @@ task_instruction:
 ## 完成标准
 
 - 每条主要问题绑定具体 `arrow_id`；
+- 每个关键 claim 节点已命题化；未命题化者标记 `needs-claim-rewrite`，不强行验标签；
 - 不把“模块问题”当作审查结论，必须说清哪条 A -> B 推不动；
 - 每个 `break_type` 优先来自 `references/arrow-audit-core.md`；若确需新增类型，标为 `proposed-new-break-type` 并写明原因；
 - 谬误标签必须绑定具体箭头，不得单独列成脱离论证树的术语清单；

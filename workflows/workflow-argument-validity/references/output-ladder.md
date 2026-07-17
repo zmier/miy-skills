@@ -32,8 +32,11 @@ scope:
 ## 输出纪律
 
 - L1 也必须说明箭头；
+- L2 以后，关键 claim 应能改写为形式逻辑视角下的简单命题或复合命题；
 - L3 以后必须有节点和箭头 ID；
+- L3 以后，根 claim / X2 / 主要 claim 应尽量包含 `logical_form`、`full_logical_restoration` 和 `readable_compressed_version`；
 - L4 以后必须用克制语言；
+- L4 以后，必须说明入选问题为什么有效削弱目标命题；若目标是假言命题，不得把单纯 `非A` 写成对 `A -> B` 的反驳；
 - GRE Argument 的 L4/L5 必须按题目指令写出 `assumption -> arrow -> impact if false` 或 `question -> target arrow -> yes/no impact`，不能只列假设或问题；
 - L5 必须符合目标场景格式。
 

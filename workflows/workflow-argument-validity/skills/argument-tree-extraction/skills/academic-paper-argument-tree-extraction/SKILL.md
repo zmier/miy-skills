@@ -105,6 +105,7 @@ incomplete-full-tree
 | 需要 full-tree / case 回测 / 专家对照 | `references/canonical-recursive-tree.md` |
 | 需要学术论文复合主轴 / 多环节协同 | `references/academic-paper-main-axis.md` |
 | 需要区分 claim 节点和 evidence 叶子 | `references/claim-vs-evidence-boundary.md` |
+| 需要还原一句话发现 / X2 / 根 claim 的命题形态 | `../../../../references/proposition-form-core.md` |
 
 无法判断类型时，先抽共同骨架，再把无法归类的证据标为 `unclear-paper-type`。
 
@@ -132,10 +133,21 @@ incomplete-full-tree
 1. 固定一句话核心发现：
 
    ```text
-   哪个 X
-   通过什么机制 M
-   影响哪个 Y
-   是否上升到 Y2 / 政策启示 / 贡献声称
+   先从 abstract 提炼作者最想让读者带走的发现；
+   将它还原为形式逻辑视角下的简单命题或复合命题；
+   再用 introduction / theory / results / conclusion 校准；
+   最后标注 X / M / Y / Y2 等研究设计成分。
+   ```
+
+   必须保留：
+
+   ```text
+   full_logical_restoration
+   readable_compressed_version
+   logical_form
+   component_propositions
+   research_function_labels
+   abstract_anchor
    ```
 
 2. 建立顶层树：
@@ -178,6 +190,12 @@ incomplete-full-tree
 
    ```text
    node_id | label | type | depth | parent_id | child_ids | evidence_ids | source_links | status
+   ```
+
+   对关键 claim 节点，还应补充：
+
+   ```text
+   logical_form | full_logical_restoration | readable_compressed_version | component_propositions | research_function_label
    ```
 
    边台账：

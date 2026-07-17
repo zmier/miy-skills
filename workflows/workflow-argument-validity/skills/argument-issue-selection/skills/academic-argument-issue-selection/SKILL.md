@@ -88,6 +88,9 @@ human-readable-issue-candidates.md
 ```text
 issue_id
 target_arrow_id
+target_proposition_form
+valid_counterexample_shape
+does_issue_match_counterexample_shape
 claim_level
 bottleneck_status
 surface_issue: 表面问题，例如“Robot 变量构造不清”
@@ -176,6 +179,9 @@ issue_id
 issue_level: major / minor / revision-action / note
 issue_status: confirmed / evidence-needed / search-before-major / hold-for-external-evidence
 target_arrow_id
+target_proposition_form
+valid_counterexample_shape
+does_issue_match_counterexample_shape
 primary_confirmed_arrows
 linked_hold_arrows
 claim_level
@@ -200,6 +206,9 @@ priority_basis: impact x repair_cost
 issue_id
 target_arrow_id
 status
+target_proposition_form
+valid_counterexample_shape
+does_issue_match_counterexample_shape
 claim_level
 bottleneck_status
 surface_issue
@@ -242,6 +251,7 @@ Merge/split note:
 - 全量候选池覆盖所有可写的 weak / broken / unclear / needs-qc / needs-external-evidence 箭头，未纳入者必须说明 irrelevant 或 duplicate；
 - 每个候选 issue 都有人类可读说明，不能只有 arrow_id、evidence_id、qc_flags；
 - 每个候选 issue 都说明表层问题和深层箭头断点，避免把关键断点压成泛泛标签；
+- 每个候选 issue 都说明它如何有效削弱目标命题；若目标是假言命题，不能把单纯 `非A` 误写成对 `A -> B` 的反驳；
 - 每个 selected issue 都绑定 target arrow；
 - 每个 selected issue 尽量绑定 repair_route；若没有 `arrow-repair-map.md`，标记 `missing-repair-map`；
 - 每个 major concern 都说明影响 `X1`、`X2` 或 `Y`；

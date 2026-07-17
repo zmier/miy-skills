@@ -37,6 +37,10 @@ A 是否足以推出 B？
 
 不要只判断 B 对不对；要判断作者给出的 A 是否足以支撑 B。
 
+进入验箭头前，`to_node B` 必须是可判真假的命题。若 B 只是“核心发现成立”“机制检验”“贡献上升”等标签，应先回到抽树阶段改写，标记 `needs-claim-rewrite`，不要直接审计标签。
+
+命题形态规则见父 workflow 的 `references/proposition-form-core.md`。
+
 ## 状态
 
 | 状态 | 含义 |
@@ -73,6 +77,26 @@ A 是否足以推出 B？
 | one-sided-reasoning | 是否只看一面，忽略反向机制、成本、约束或代价 |
 | overclaim | A 只能支持弱结论，却被写成强结论 |
 | evidence-qc-gap | 证据缺少原文、数值、表格或出处核验 |
+
+## 命题形态与反驳形态
+
+验箭头时必须记录目标命题 B 的形态，因为不同命题需要不同反驳：
+
+| B 的形态 | 审计重点 | 有效反驳形态 |
+|---|---|---|
+| 直言命题：S 是 P | A 是否足以证明 S/P 的属性、关系或概念归属 | S 存在但不是 P；或 S/P 概念不成立 |
+| 假言命题：A -> B | 作者是否证明前件场景下后件成立 | A 且 非B |
+| 联言命题：A 且 B | 每个联言支是否分别成立，是否需要共同成立 | 反驳任一必要联言支 |
+| 选言命题：A 或 B | 选项是否相容、互斥、穷尽 | 按选言性质排除仍可成立的选项 |
+
+特别规则：
+
+```text
+反驳 A -> B，必须击中 A 且 非B。
+单纯 非A 不能反驳 A -> B。
+```
+
+`非A` 可以说明作者没有证明前件存在，或材料不覆盖目标场景，但这属于证据缺口、范围错配或前件未确立，不是对假言命题本身的反例。
 
 ## 概念关系检查
 
@@ -182,6 +206,9 @@ A 是否足以推出 B？
 arrow_id
 from_node
 to_node
+target_proposition_form
+valid_counterexample_shape
+does_break_match_counterexample_shape
 status
 break_type
 hidden_premise

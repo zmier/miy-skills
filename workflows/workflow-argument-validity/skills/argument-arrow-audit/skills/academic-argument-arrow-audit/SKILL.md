@@ -70,6 +70,7 @@ A 是否足以推出 B？
 
 ```text
 先取作者论证树上的 arrow_id；
+确认 from_node / to_node 是可判真假的命题；
 再判断 from_node A 是否足以推出 to_node B；
 最后才把断点翻译成学术审稿语言。
 ```
@@ -86,6 +87,8 @@ A 是否足以推出 B？
 ```
 
 这些模块名只能作为 `arrow_type` 或证据材料标签，不能替代“作者用 A 推 B，A 是否足以推出 B”的主轴。
+
+同理，`gap`、`construct`、`identification`、`mechanism`、`robustness`、`contribution` 等是学术研究或论文写作标签，不是形式逻辑命题。验箭头前必须先把目标节点还原为命题形态，并记录 `target_proposition_form`；必要时按父 workflow 的 `references/proposition-form-core.md` 判断反驳形态。
 
 本 Skill 只做诊断。若要把 weak/broken/unclear 箭头选择成 major concern、minor concern 或 revision action，调用：
 
@@ -149,10 +152,11 @@ short-run finding -> broad contribution / policy implication
 通用断点类型与逻辑谬误标签使用父 Skill 的 `../../references/arrow-audit-core.md`。学术表达映射使用 `references/academic-fallacy-adapter.md`。操作顺序是：
 
 ```text
-1. 先用 arrow-audit-core 判断 A -> B 的通用断点；
-2. 再用 academic-arrow-types 给这条箭头贴学术类型标签；
-3. 再按 empirical / theory-model / review-concept 等论文类型读取 academic-fallacy-adapter；
-4. 最后把断点翻译成审稿语言。
+1. 先确认 A 与 B 已命题化，特别是 B 的 logical_form；
+2. 再用 arrow-audit-core 判断 A -> B 的通用断点；
+3. 再用 academic-arrow-types 给这条箭头贴学术类型标签；
+4. 再按 empirical / theory-model / review-concept 等论文类型读取 academic-fallacy-adapter；
+5. 最后把断点翻译成审稿语言。
 ```
 
 若论文是材料、器件、能源收集、传感器、柔性电子、可穿戴或其他工科实验论文，还要读取：
