@@ -1,0 +1,4 @@
+interface:
+  display_name: "Miy Venv"
+  short_description: "Python venv and dependency governance"
+  default_prompt: "Use $miy-venv to inspect scattered .venv folders, classify them, and propose a safe dependency-governance plan before deleting anything."

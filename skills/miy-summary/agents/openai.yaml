@@ -1,0 +1,7 @@
+interface:
+  display_name: "当日工作总结"
+  short_description: "按日期归纳项目工作、任务进展并推送飞书日历"
+  default_prompt: "使用 $miy-summary 总结指定日期的项目工作，并按小时写入飞书日历。"
+
+policy:
+  allow_implicit_invocation: true
