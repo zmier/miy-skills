@@ -41,7 +41,7 @@ The Skill does not treat a hard-coded commit list as truth. For the `alib` works
 2. parent `.gitmodules` plus `160000` tree entries: current declared topology and exact gitlinks;
 3. child remote refs: current reachability and branch facts.
 
-The registry currently covers all 17 top-level `alib-main` submodules. OIDs, dirty state, initialized state, and ahead/behind are deliberately discovered live because they change during normal work.
+The registry currently covers all 18 top-level `alib-main` submodules. OIDs, dirty state, initialized state, and ahead/behind are deliberately discovered live because they change during normal work.
 
 Treat drift as a governance finding:
 
