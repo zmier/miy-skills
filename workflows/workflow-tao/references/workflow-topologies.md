@@ -5,6 +5,7 @@ status: draft
 scope:
   - workflow-tao
 source_log: ../logs/2026-07-05-workflow拓扑-树形与图型.md
+source_log_update: ../logs/2026-07-08-graph-workflow-node-task-contract.md
 source_case:
   - workflow-research
   - CASE-260521-基金经理研究
@@ -222,6 +223,53 @@ route 内部用 task-driven / tree-like execution；
 阶段复盘时重新评估 route 之间的关系；
 不要把 route 内部 green 误判为整个项目 green。
 ```
+
+## Graph-like Workflow 的 Node / Task 分层
+
+graph-like / hybrid graph-of-trees 的关键风险，是把线性执行记录误读成研究图本身。推荐区分：
+
+```text
+nodes/ = 图层节点，管理长期存在的 route / claim / design / evidence state
+tasks/ = 执行层任务，管理一段时间内线性推进的工作包
+```
+
+关系不是一对一，而是多对多：
+
+```text
+一个 Task 可以更新多个 Node；
+一个 Node 可以被多个 Task 更新；
+Task 的顺序不等于 Node 的重要性；
+Node 的合并、拆分、降级或弃用应保留 provenance。
+```
+
+Task 应记录：
+
+```text
+目标与输入；
+实际动作；
+直接产物；
+影响了哪些 nodes；
+分别更新了每个 node 的哪类信息；
+哪些观察只留在 task 内，哪些需要回挂到 node。
+```
+
+Node 应记录：
+
+```text
+当前状态；
+当前 claim / route 直觉；
+已明确的信息；
+候选但未确认的信息；
+未明确信息；
+关联 tasks；
+关联文献或证据；
+数据需求；
+候选设计；
+识别威胁；
+下一步问题。
+```
+
+这一分层不要求所有项目都建立 `nodes/`。只有当项目主干尚未固定、多个候选路线并行竞争，或一个执行任务会同时改变多个研究/产品/策略节点时，才需要显式引入 Node / Task 双层结构。
 
 ## 判定 Checklist
 

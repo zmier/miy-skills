@@ -25,6 +25,7 @@ scope:
 | 论文写作 / 审稿 workflow | `../workflow-paper-writing-review/` | 正向构造与逆向验收共享质量系统；审稿 TASK 如何反哺 workflow |
 | 论证有效性 / 论证树 workflow | `../workflow-argument-validity/` | 对话洞见、课程方法、论证树、Mermaid/Obsidian、父子 workflow 设计 |
 | 任务驱动项目 workflow | `../workflow-task-driven-project/` | 从项目脚手架升级到 TASK 树、证据台账、ReAct 日志、阶段复盘、Obsidian 双链和 workflow/skill 反哺 |
+| 学术研究 workflow | `../workflow-research/` | graph-like route portfolio、Research Roadmap、seminar route gate、证据门控的 TASK 升格与跨 Skill 单一语义所有者 |
 
 ## 外部项目样本
 

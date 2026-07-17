@@ -33,6 +33,7 @@ flowchart TD
 - 需要保留个案 TASK 与通用能力之间的证据边界；
 - 需要保留 workflow 构思、讨论、分歧和抽象过程，避免只留下最终规则；
 - 需要模板、台账、状态机、测试和迁移评测；
+- 需要跨层级 roadmap / navigation map，让人理解 workflow、project、TASK、node 和证据如何演进；
 - 正向构造与逆向审计共享同一质量标准；
 - 一个成熟 workflow 需要抽父以容纳多个平台或子领域。
 
@@ -87,6 +88,43 @@ mode: internal-blind-audit / full-evidence-audit
 ```
 
 详细判断见 `references/composite-skill-patterns.md`。
+
+设计 workflow 时，还应判断它的拓扑形态：
+
+```text
+tree-like workflow：目标和主流程清晰，有主干与分支，例如抓接口 -> 分析参数 -> 写脚本 -> 工程交付；
+graph-like workflow：目标方向存在，但主干、分支和节点关系需要探索，例如学术研究中的候选 claim / route portfolio；
+hybrid graph-of-trees：顶层是图状探索，每个节点内部可以调用树形子 workflow 执行文献阅读、数据审计、实验设计或交付。
+```
+
+对于 graph-like / hybrid graph-of-trees，应避免把执行任务误当成项目主轴。推荐区分：
+
+```text
+nodes/ = 图层节点，管理长期存在的 route / claim / design / evidence state
+tasks/ = 执行层任务，管理一段时间内线性推进的工作包
+```
+
+核心原则：
+
+```text
+Task 可以线性推进；
+Task 的影响可以非线性地贡献到多个 Node；
+Node 可以被多个 Task 反复更新；
+Workflow 父入口应说明 Node 与 Task 的回挂规则。
+```
+
+对于 graph-like / hybrid graph-of-trees，还应提供跨层级 roadmap 作为可理解性入口。使用通用 `$roadmap` Skill 承接视觉语法、状态、click 链接和跨层级导航：
+
+```text
+Roadmap = 为什么这样推进；
+Lineage Map = 对象 / 任务如何组织；
+Change Map = 结构或解释如何变化；
+Technical Route = 执行步骤如何落地。
+```
+
+父 workflow 应说明哪些 roadmap 放在父入口，哪些放在 project / task / node 层，以及上层节点如何链接到下层稳定入口。
+
+详细拓扑判断见 `references/workflow-topologies.md`。
 
 工程约定：
 
@@ -149,12 +187,26 @@ provenance = 能力来源、清洗方式和迁移状态
 - 执行模式反哺：若真实任务暴露出“同一步骤在盲跑、初审、正式执行或完整检索中完成标准不同”，应先在 TASK 记录，再提升为 mode-aware completion standard。
 - Workflow 构思过程反哺：当一次对话、项目复盘或抽父过程产生新的 workflow 设计，应先写入目标 workflow 的 `logs/YYYY-MM-DD-主题.md`，记录原始问题、关键原文、方案分歧、最终决定和迁移边界；只有稳定、可迁移的部分再提升到 `references/` / `templates/` / `SKILL.md`。
 
+当同一真实案例同时影响多个 Skills / workflows 时，使用 `single semantic owner`：
+
+```text
+一个中央 reference 定义完整规则；
+各消费 Skill 只保留本职责内的触发、动作、输出和验收；
+source provenance 记录共同来源与清洗边界；
+禁止五个 Skill 各复制一套近似流程。
+```
+
+若只有一个参与提炼的来源案例，先标记 `structural-green / forward-test-pending`。即使跨 Skill 集成完整，也不自动创建新的父 Skill；只有新案例证明该组合具有独立职责和稳定触发，才考虑抽父或创建子 Skill。
+
 ## 内部参考
 
 - `references/workflow-skill-shape.md`：workflow 型 Skill 应该长什么样。
 - `references/composite-skill-patterns.md`：复合 Skill 的常见类型，包括工序型与诊断路由型。
+- `references/workflow-topologies.md`：workflow 顶层拓扑判断，包括 tree-like、graph-like、hybrid graph-of-trees 与 Node / Task 分层。
 - `references/reference-workflow-cases.md`：可参考的成熟和发展中 workflow 样本索引。
 - `references/workflow-placement-policy.md`：复杂能力应放在 workflow、Skill、TASK 还是 reference。
 - `references/regression-test-protocol.md`：Skill / workflow 修改后的回归测试协议，包含纯净 subAgent 与 baseline/target 质量对比。
 - `references/workflow-conception-log-policy.md`：workflow 构思日志机制，规定 `logs/YYYY-MM-DD-主题.md` 的触发、内容和提升边界。
+- `logs/2026-07-08-graph-workflow-node-task-contract.md`：图型 workflow 的 Node / Task 分层约定来源与迁移边界。
+- `logs/2026-07-09-roadmap-cross-level-navigation.md`：从 CASE-260521 抽象出的跨层级 roadmap / navigation map 规则。
 - `skills/workflow-tao-orchestrator/SKILL.md`：创建、抽父、迁移和回收 workflow 型 Skill 的总编排。
