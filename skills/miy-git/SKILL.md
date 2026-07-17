@@ -1,6 +1,6 @@
 ---
 name: miy-git
-description: Git 仓库治理与长期运维 Skill。用于检查和清理脏工作树、按主题提交、治理 .gitignore、识别应提交/应忽略文件、维护轻量父仓与 submodule、决定何时 commit/push、验证 gitlink 远端可达、设计 pre-commit/pre-push 守门、创建或迁移 Gitee/GitHub 子仓、控制仓库体积并规划安全历史重建。适用于用户要求“治理 git”“弄干净仓库”“提交 push”“拆 submodule”“维护总库和子库”“设计 hook”“创建新仓库”“接入 Gitee MCP”“仓库体积治理”“不要漏 add logs”等场景。
+description: Git 仓库治理与长期运维 Skill。用于检查和清理脏工作树、按主题提交、治理 .gitignore、识别应提交/应忽略文件、维护轻量父仓与 submodule、读取 alib 工作区子仓登记表、决定何时 commit/push、验证 gitlink 远端可达、设计 pre-commit/pre-push 守门、创建或迁移 Gitee/GitHub 子仓、控制仓库体积并规划安全历史重建。适用于用户要求“治理 git”“弄干净仓库”“提交 push”“拆 submodule”“维护总库和子库”“有哪些子仓”“设计 hook”“创建新仓库”“接入 Gitee MCP”“仓库体积治理”“不要漏 add logs”等场景。
 ---
 
 # Miy Git
@@ -19,6 +19,7 @@ Use this Skill to turn messy Git state into a clear, reproducible repository sta
 - Commit and push are event-driven, not timer-driven: commit a coherent accepted unit; push it in the same work session when it becomes a recovery point or a dependency of another repository.
 - Hooks may reject unsafe operations or print diagnostics. They must not auto-add, auto-commit, auto-push, auto-pull submodules, rewrite history, or delete files.
 - Record what was pushed and what remains intentionally ignored.
+- In the `alib` workspace, read [alib-submodule-registry.md](references/alib-submodule-registry.md) before changing repository boundaries, then reconcile it against live `.gitmodules`, parent gitlinks, and child remotes.
 
 ## Repository Roles
 
@@ -31,6 +32,23 @@ For a large parent + submodule workspace, classify each boundary before acting:
 - `recovery-anchor`: remote clone, verified bundle, or external file backup used before destructive governance.
 
 Do not infer ownership only from the physical directory name. A project under `Sources/` or `Assets/` may still be an independent child repository.
+
+## Workspace Inventory
+
+The Skill does not treat a hard-coded commit list as truth. For the `alib` workspace, use three layers:
+
+1. [alib-submodule-registry.md](references/alib-submodule-registry.md): stable path, remote, ownership role, branch policy, and known exception;
+2. parent `.gitmodules` plus `160000` tree entries: current declared topology and exact gitlinks;
+3. child remote refs: current reachability and branch facts.
+
+The registry currently covers all 17 top-level `alib-main` submodules. OIDs, dirty state, initialized state, and ahead/behind are deliberately discovered live because they change during normal work.
+
+Treat drift as a governance finding:
+
+- live submodule missing from the registry: classify and register it before closing the task;
+- registry entry missing from `.gitmodules` or the parent tree: mark stale and repair or retire it;
+- path, URL, branch policy, or ownership changed: update the registry in the same parent transaction;
+- ordinary child commit/gitlink movement: do not rewrite the registry unless stable metadata changed.
 
 ## Standard Workflow
 
@@ -115,6 +133,7 @@ Read [hook-policy.md](references/hook-policy.md) before adding or changing hooks
 - Per commit: staged diff, secret/asset/size hook, relevant tests.
 - Per parent gitlink update: child commit, child push, remote OID verification, parent pointer commit, parent push.
 - Per work session: fetch/ahead-behind check and push accepted recovery points.
+- Per `alib` topology change: reconcile `.gitmodules`, parent gitlinks, and `alib-submodule-registry.md`; current OID-only movement is not a topology change.
 - Monthly or after abnormal growth: `git count-objects -vH`, parent objects vs `.git/modules`, largest tracked blobs, and remote size review.
 - Before structural migration: external backup, isolated clone, fresh-clone UAT, and explicit rollback evidence.
 - After migration: retain old remote/bundle/migration copies for a defined period; delete only with separate authorization.
@@ -154,7 +173,8 @@ Use this when a directory inside a repo should become a separate repository:
    - `git submodule add <url> <path>` for new paths;
    - for existing paths, remove only from the parent index after the standalone repo is safe.
 7. Commit parent `.gitmodules` and gitlink.
-8. Document how to update the submodule.
+8. If this is the `alib` workspace, add or revise its entry in [alib-submodule-registry.md](references/alib-submodule-registry.md) in the same parent transaction.
+9. Document how to update the submodule.
 
 After several planned splits, finish all structure changes first and perform at most one parent-history rewrite/GC cycle. Do not rewrite the parent after every child extraction.
 
@@ -179,6 +199,7 @@ Final reports should include:
 - what was committed and pushed;
 - what remains ignored and why;
 - submodule commits and parent gitlinks if relevant;
+- `alib` registry reconciliation when a submodule was added, removed, renamed, or repointed;
 - remote-reachability evidence for every published gitlink;
 - which hooks ran or were intentionally bypassed;
 - backup/bundle/fresh-clone evidence for high-risk operations;

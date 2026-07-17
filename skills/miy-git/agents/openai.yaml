@@ -1,4 +1,4 @@
 interface:
   display_name: "Miy Git"
   short_description: "Git hygiene, parent/submodule operations, hooks, and repository lifecycle"
-  default_prompt: "Use $miy-git to inspect the repository graph, classify parent and child ownership, stage by topic, enforce child-before-parent publication, and verify hooks and remote reachability before committing or pushing."
+  default_prompt: "Use $miy-git to inspect the repository graph, load the alib submodule registry when applicable, classify parent and child ownership, stage by topic, enforce child-before-parent publication, and verify hooks and remote reachability before committing or pushing."
