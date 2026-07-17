@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Workflow"
+  short_description: "用于规划、生产、审片、返修与交付的可回归 AI 视频工作流"
+  default_prompt: "Use $workflow-video to plan and run this video project with explicit artifacts, gates, review, and regression evidence."
