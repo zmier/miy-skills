@@ -7,6 +7,20 @@
 - [`econ-writing-skill`](./econ-writing-skill)：经济学论文写作规则 Skill。
 - [`clo-author`](./clo-author)：经验经济学研究项目脚手架/多 agent 工作流系统。
 
+## `garden-skills`
+
+路径：[`skills/garden-skills`](./garden-skills)。这是 [ConardLi/garden-skills](https://github.com/ConardLi/garden-skills) 的 MIT 许可子模块，固定跟踪其 `main` 分支，用于保持上游 Skill 的边界、归属和更新历史。
+
+它收录跨平台的创意与前端类 Skill，包括：
+
+- `web-video-presentation`：把脚本或文章制作成可录屏的网页演示；
+- `web-design-engineer`：网页、仪表盘、交互原型和设计系统；
+- `gpt-image-2`：图像生成、编辑与结构化提示词；
+- `kb-retriever`：本地知识库的渐进式检索；
+- `beautiful-article`：将多种来源整理为可发布的长文。
+
+其中 `web-video-presentation` 是具体的网页演示产物工程能力；本仓库的 [`workflow-video`](../workflows/workflow-video) 则负责更完整的视频生产流程。需要生成交互式演示或录屏页面时优先前者；需要从选题、剧本、镜头到渲染与审校的生产治理时优先后者。上游内部内容应在子模块中维护；本仓只维护 gitlink、集成说明和跨 Skill 路由。
+
 ## 快速判断
 
 一句话区分：
@@ -233,4 +247,3 @@ clo-author/
   - 与现有 Skills 的关系
   - Codex/Claude 适配状态
   - 推荐使用场景
-

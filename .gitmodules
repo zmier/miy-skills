@@ -31,3 +31,7 @@
 [submodule "vendors/book-to-skill"]
 	path = vendors/book-to-skill
 	url = https://github.com/virgiliojr94/book-to-skill.git
+[submodule "skills/garden-skills"]
+	path = skills/garden-skills
+	url = git@github.com:ConardLi/garden-skills.git
+	branch = main
