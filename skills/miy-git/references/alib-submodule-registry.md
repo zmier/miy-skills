@@ -23,7 +23,7 @@ Never rely on the snapshot table alone for a push decision. Reconcile it against
 
 ## Top-Level Registry
 
-Snapshot: 2026-07-17, 18 top-level entries. An omitted `.gitmodules` branch means “follow the child repository's governed default/upstream”; do not guess `main` or `master` from the omission.
+Snapshot: 2026-07-28, 19 top-level entries. An omitted `.gitmodules` branch means “follow the child repository's governed default/upstream”; do not guess `main` or `master` from the omission.
 
 | Path | Remote | Role | Branch policy / note |
 |---|---|---|---|
@@ -42,6 +42,7 @@ Snapshot: 2026-07-17, 18 top-level entries. An omitted `.gitmodules` branch mean
 | `Writer/03 Projects/2026-学位/市场营销` | `git@gitee.com:azen/marketing.git` | first-party project | child default/upstream |
 | `Writer/03 Projects/J-260128-重大结项` | `git@gitee.com:azen/j-260128-major-project.git` | first-party project | `.gitmodules` pins branch `main` |
 | `Writer/03 Projects/260715-微课` | `git@gitee.com:azen/ai-video-microcourse.git` | first-party active video production project | `.gitmodules` pins branch `main`; code, documents, manifests, and checks stay in Git; source and generated binary assets stay local + miku |
+| `Writer/03 Projects/冒险者工会/PROJECT-靶JS系列逆向` | `git@gitee.com:azen/js-reverse-target-series.git` | first-party project | `.gitmodules` pins branch `main`; closed target-JS reverse project; large raw traces and long submission screenshots stay in external local archive |
 | `Writer/.pytools/scholar-kit` | `git@gitee.com:azen/scholar-kit.git` | first-party tool | `.gitmodules` pins branch `main` |
 | `Writer/99 Assets/Apps/刷题系统` | `git@gitee.com:azen/quiz-bank-system.git` | first-party app | `.gitmodules` pins branch `main`; independent owner despite Assets path |
 | `Writer/00 信息/工具/alib-miku-sync` | `git@gitee.com:azen/alib-miku-sync.git` | first-party macOS tool | `.gitmodules` pins branch `main`; generated apps/config stay local + miku |
